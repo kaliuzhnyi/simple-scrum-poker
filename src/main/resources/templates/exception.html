@@ -13,11 +13,11 @@
     <script src="https://kit.fontawesome.com/cd8a5ef3be.js" crossorigin="anonymous"></script>
     <!--*/-->
 
-    <th:block th:replace="~{/assets/html/base::head}"></th:block>
+    <th:block th:replace="~{assets/html/base::head}"></th:block>
 </head>
 
 <body>
-<header th:replace="~{/assets/html/base::header}"></header>
+<header th:replace="~{assets/html/base::header}"></header>
 <main class="container position-absolute top-50 start-50 translate-middle">
     <div class="row align-items-center">
         <div class="col-4 text-end">
@@ -30,6 +30,6 @@
         </div>
     </div>
 </main>
-<footer th:replace="/assets/html/base::footer"></footer>
+<footer th:replace="~{assets/html/base::footer"></footer>
 </body>
 </html>

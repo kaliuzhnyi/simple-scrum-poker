@@ -17,10 +17,10 @@
             crossorigin="anonymous"></script>
     <!--*/-->
 
-    <th:block th:replace="/assets/html/base::head"></th:block>
+    <th:block th:replace="~{assets/html/base::head}"></th:block>
 </head>
 <body>
-<header th:replace="/assets/html/base::header"></header>
+<header th:replace="~{assets/html/base::header}"></header>
 <main class="container my-5">
     <div class="row justify-content-around">
 
@@ -89,6 +89,6 @@
 
     </div>
 </main>
-<footer th:replace="/assets/html/base::footer"></footer>
+<footer th:replace="~{assets/html/base::footer}"></footer>
 </body>
 </html>
