@@ -37,8 +37,7 @@ spring:
           auth: true
           starttls:
             enable: true
-server:
-  error:
-    whitelabel:
-      enabled: false
-  port: 8080
+#server:
+#  error:
+#    whitelabel:
+#      enabled: false
