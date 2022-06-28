@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Update password</title>
+
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    <!--*/-->
+
+    <th:block th:replace="~{/assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{/assets/html/base::header}"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-4">
+            <h2 class="mb-4">Update password</h2>
+            <form name="user-update-password"
+                  th:method="patch"
+                  th:action="@{/users/{userId}/password(userId=${#authentication.principal.id})}"
+                  th:object="${userUpdatePassword}">
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Current password"
+                           th:field="*{currentPassword}"
+                           th:errorclass="is-invalid">
+                    <label for="currentPassword">Current password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('currentPassword')}"
+                         th:errors="*{currentPassword}">Current password error</div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                           th:field="*{password}"
+                           th:errorclass="is-invalid">
+                    <label for="password">Password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}">Password error</div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="repeatPassword" name="repeatPassword" placeholder="Repeat password"
+                           th:field="*{repeatPassword}"
+                           th:errorclass="is-invalid">
+                    <label for="repeatPassword">Repeat password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('repeatPassword')}"
+                         th:errors="*{repeatPassword}">Repeat password error</div>
+                </div>
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{/assets/html/base::footer}"></footer>
+</body>
+</html>

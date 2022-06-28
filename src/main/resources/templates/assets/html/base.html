@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <!--/*
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    */-->
+
+    <!--/*
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../../static/css/style.css">
+    <link rel="stylesheet" href="../../../static/css/bootsrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="../../../static/js/bootstrap.bundle.js"></script>
+    */-->
+
+    <link rel="stylesheet"
+          href="../../../static/css/style.css"
+          th:href="@{/css/style.css}">
+    <link rel="stylesheet"
+          href="../../../static/css/bootsrap.css"
+          th:href="@{/css/bootsrap.css}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="../../../static/js/bootstrap.bundle.js"
+            th:src="@{/js/bootstrap.bundle.js}"></script>
+
+</head>
+
+<body>
+
+<!--HEADER-->
+<header class="container mb-5" th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold mt-n1" href="/" th:text="#{website.title.logo}">Website title</a>
+            <!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">-->
+            <!--                <span class="navbar-toggler-icon"></span>-->
+            <!--            </button>-->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+
+                </ul>
+            </div>
+
+            <div class="dropdown" sec:authorize="not isAuthenticated()">
+                <button class="btn btn-outline-secondary dropdown-toggle" id="sign" data-bs-toggle="dropdown"
+                        aria-expanded="false" data-bs-display="static">
+                    <span class="d-none d-lg-inline">Sign</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sign">
+                    <li><a class="dropdown-item" th:href="@{/signin}">Sign In</a></li>
+                    <li><a class="dropdown-item" th:href="@{/signup}">Sign Up</a></li>
+                </ul>
+            </div>
+
+            <div sec:authorize="isAuthenticated()">
+                <button class="btn btn-outline-secondary dropdown-toggle" id="profile" data-bs-toggle="dropdown"
+                        aria-expanded="false" data-bs-display="static">
+                    <span class="d-none d-lg-inline"
+                          th:text="${#authentication.principal.name}
+                            ? ${#authentication.principal.name}
+                            : ${#authentication.principal.email}">Username</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sign">
+                    <li><a class="dropdown-item"
+                           th:href="@{/users/{userId}/profile(userId=${#authentication.principal.id})}">My profile</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/rooms}">My rooms</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <form th:action="@{/signout}" th:method="post">
+                            <button class="dropdown-item" type="submit">Sign Out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+</header>
+
+<!--MAIN-->
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-4">
+            <h2 class="mb-4">Create instant room</h2>
+            <form name="createInstantRoom" method="post" action="/room/create">
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="createRoomTitle" name="title" placeholder="Room title">
+                    <label for="createRoomTitle">Room title</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <textarea class="form-control" id="createRoomDescription" name="description"
+                              placeholder="Room description"></textarea>
+                    <label for="createRoomDescription">Room description</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="createRoomPassword" name="password"
+                           placeholder="Room password">
+                    <label for="createRoomPassword">Room password</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="ownerName" placeholder="Owner name">
+                    <label for="ownerName">Owner name</label>
+                </div>
+
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Create a new room</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h2 class="mb-4">Enter the room</h2>
+            <form name="enterRoom" method="post" href="/room/enter">
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="enterRoomId" placeholder="Room ID">
+                    <label for="enterRoomId">Room ID</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="enterRoomPassword" placeholder="Room password">
+                    <label for="enterRoomPassword">Room password</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="enterRoomUserName" placeholder="User name">
+                    <label for="enterRoomUserName">User name</label>
+                </div>
+
+                <button class="btn btn-outline-primary btn-lg mb-4" type="submit">Enter the room</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!--FOOTER-->
+<footer class="container my-5" th:fragment="footer">
+    <!--    -->
+</footer>
+
+</body>
+</html>

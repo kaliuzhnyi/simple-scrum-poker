@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign Up</title>
+    <th:block th:replace="/assets/html/base::head"></th:block>
+</head>
+<body>
+<header th:replace="/assets/html/base::header"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-4">
+            <h2 class="mb-4">Sign Up</h2>
+            <form name="signup" method="post" action="/users/signup" th:action="@{/signup}" th:object="${user}">
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                           th:field="*{name}"
+                           th:errorclass="is-invalid">
+                    <label for="name">Name</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}">Name error</div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                           th:field="*{email}"
+                           th:errorclass="is-invalid">
+                    <label for="email">Email</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}">Email error</div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                           th:field="*{password}"
+                           th:errorclass="is-invalid">
+                    <label for="password">Password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}">Password error</div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="repeatPassword" name="repeatPassword" placeholder="Repeat password"
+                           th:field="*{repeatPassword}"
+                           th:errorclass="is-invalid">
+                    <label for="repeatPassword">Repeat password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('repeatPassword')}"
+                         th:errors="*{repeatPassword}">Repeat password error</div>
+                </div>
+
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Sign Up</button>
+                <a class="btn btn-link float-end" th:href="@{/signin}">Sign In</a>
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="/assets/html/base::footer"></footer>
+</body>
+</html>

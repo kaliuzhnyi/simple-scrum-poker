@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<th:block th:fragment="form-make-vote(room,vote,voteCards)">
+
+    <!--/*@thymesVar id="room" type="com.simplescrumpoker.dto.room.RoomReadDto"*/-->
+    <!--/*@thymesVar id="vote" type="com.simplescrumpoker.dto.vote.VoteCreateDto"*/-->
+    <!--/*@thymesVar id="voteCards" type="java.util.List<com.simplescrumpoker.model.VoteCard>"*/-->
+
+    <form th:name="makevote"
+          th:method="post"
+          th:action="@{/rooms/{roomId}/vote(roomId=${room.id})}"
+          th:object="${vote}">
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN)}">
+            <input type="radio" class="btn-check" id="card-unknown" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN == vote.value}">
+            <label class="btn btn-outline-danger border border-danger border-2 opacity-50 fw-bold mx-1"
+                   for="card-unknown">?</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_0)}">
+            <input type="radio" class="btn-check" id="card-0" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_0}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_0 == vote.value}">
+            <label class="btn btn-outline-warning border border-warning border-2 opacity-50 fw-bold mx-1"
+                   for="card-0">0</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_1)}">
+            <input type="radio" class="btn-check" id="card-1" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_1}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_1 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-1">1</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_2)}">
+            <input type="radio" class="btn-check" id="card-2" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_2}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_2 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-1">2</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_3)}">
+            <input type="radio" class="btn-check" id="card-3" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_3}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_3 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-3">3</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_5)}">
+            <input type="radio" class="btn-check" id="card-5" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_5}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_5 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-5">5</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_8)}">
+            <input type="radio" class="btn-check" id="card-8" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_8}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_8 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-8">8</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_13)}">
+            <input type="radio" class="btn-check" id="card-13" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_13}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_13 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-13">13</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_20)}">
+            <input type="radio" class="btn-check" id="card-20" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_20}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_20 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-20">20</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_40)}">
+            <input type="radio" class="btn-check" id="card-40" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_40}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_40 == vote.value}">
+            <label class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                   for="card-40">40</label>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_100)}">
+            <input type="radio" class="btn-check" id="card-100" name="value"
+                   th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_100}"
+                   th:checked="${T(com.simplescrumpoker.model.VoteCard).VALUE_100 == vote.value}">
+            <label class="btn btn-outline-warning border border-warning border-2 opacity-50 fw-bold mx-1"
+                   for="card-100">100</label>
+        </th:block>
+
+        <button class="btn btn-primary mx-1" type="submit">Make vote</button>
+
+    </form>
+</th:block>
+
+<br>
+
+<th:block th:fragment="form-make-vote-new(room,vote,voteCards)">
+
+    <!--/*@thymesVar id="room" type="com.simplescrumpoker.dto.room.RoomReadDto"*/-->
+    <!--/*@thymesVar id="vote" type="com.simplescrumpoker.dto.vote.VoteCreateDto"*/-->
+    <!--/*@thymesVar id="voteCards" type="java.util.List<com.simplescrumpoker.model.VoteCard>"*/-->
+
+    <form th:name="makevote"
+          th:method="post"
+          th:action="@{/rooms/{roomId}/vote(roomId=${room.id})}"
+          th:object="${vote}">
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN)}">
+            <button type="submit"
+                    class="btn btn-outline-danger border border-danger border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN == vote.value}">?
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_0)}">
+            <button type="submit"
+                    class="btn btn-outline-warning border border-warning border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_0}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_0 == vote.value}">0
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_1)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_1}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_1 == vote.value}">1
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_2)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_2}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_2 == vote.value}">2
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_3)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_3}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_3 == vote.value}">3
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_5)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_5}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_5 == vote.value}">5
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_8)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_8}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_8 == vote.value}">8
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_13)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_13}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_13 == vote.value}">13
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_20)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_20}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_20 == vote.value}">20
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_40)}">
+            <button type="submit"
+                    class="btn btn-outline-primary border border-primary border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_40}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_40 == vote.value}">40
+            </button>
+        </th:block>
+
+        <th:block th:if="${#lists.contains(voteCards, T(com.simplescrumpoker.model.VoteCard).VALUE_100)}">
+            <button type="submit"
+                    class="btn btn-outline-warning border border-warning border-2 opacity-50 fw-bold mx-1"
+                    th:value="${T(com.simplescrumpoker.model.VoteCard).VALUE_100}"
+                    th:autofocus="${T(com.simplescrumpoker.model.VoteCard).VALUE_100 == vote.value}">100
+            </button>
+        </th:block>
+
+    </form>
+</th:block>
+
+</body>
+</html>

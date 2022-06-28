@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <th:block th:replace="~{/assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{/assets/html/base::header}"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-4">
+            <h2 class="mb-4">Profile</h2>
+
+            <form name="user-update-data"
+                  th:method="patch"
+                  th:action="@{/users/{userId}/profile(userId=${#authentication.principal.id})}"
+                  th:object="${userUpdateProfile}">
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="id" name="id" placeholder="Id"
+                           th:field="*{id}"
+                           readonly disabled>
+                    <label for="name">Id</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                           th:field="*{name}"
+                           th:errorclass="is-invalid">
+                    <label for="name">Name</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}">Name error
+                    </div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                           th:field="*{email}"
+                           readonly disabled>
+                    <label for="email">Email</label>
+                </div>
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Update profile</button>
+            </form>
+            <hr>
+            <a class="link-secondary"
+               th:href="@{/users/{userId}/password(userId=${#authentication.principal.id})}">Change password</a>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{/assets/html/base::footer}"></footer>
+</body>
+</html>

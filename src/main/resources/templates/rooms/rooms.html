@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rooms</title>
+
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    <!--*/-->
+
+    <th:block th:replace="/assets/html/base::head"></th:block>
+</head>
+<body>
+<header th:replace="/assets/html/base::header"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+
+        <div class="col-md-10 mb-3">
+
+            <!-- OWN ROOMS -->
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-10">
+                    <h2>My own rooms</h2>
+                </div>
+                <div class="col-2">
+                    <a class="link-primary text-decoration-none float-end" href="#" th:href="@{/rooms/create}">Create room</a>
+                </div>
+            </div>
+            <div class="row" th:if="${#lists.isEmpty(ownRooms)}">
+                <div class="mt-n1">
+                    <div class="alert alert-warning opacity-50" role="alert">You don't have your own rooms yet...
+                        <a class="alert-link text-decoration-none" href="#" th:href="@{/rooms/create}">Create my own room!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" th:if="${not #lists.isEmpty(ownRooms)}">
+                <div class="my-1 py-1" th:each="room : ${ownRooms}">
+                    <span class="d-block">
+                        <strong class="text-muted" th:text="${room.title}"></strong>
+                        <a class="text-decoration-none fw-bold"
+                           th:href="@{/rooms/{roomId}(roomId=${room.id})}"
+                           th:text="${room.id}"></a>
+                    </span>
+                    <span class="d-block text-muted text-truncate" th:text="${room.description}"></span>
+                    <hr class="text-opacity-50 text-secondary">
+                </div>
+            </div>
+
+            <!-- ENTERED ROOMS -->
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-10">
+                    <h2>My entered rooms</h2>
+                </div>
+                <div class="col-2">
+                    <a class="link-primary text-decoration-none float-end" href="#" th:href="@{/rooms/enter}">Enter the room</a>
+                </div>
+            </div>
+            <div class="row" th:if="${#lists.isEmpty(enteredRooms)}">
+                <div class="mt-n1">
+                    <div class="alert alert-warning opacity-50" role="alert">You don't enter to any rooms yet...
+                        <a class="alert-link text-decoration-none" href="#" th:href="@{/rooms/enter}">Enter the
+                            room!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" th:if="${not #lists.isEmpty(enteredRooms)}">
+                <div class="my-1 py-1" th:each="room : ${enteredRooms}">
+                    <span class="d-block">
+                        <strong class="text-muted" th:text="${room.title}"></strong>
+                        <a class="text-decoration-none fw-bold"
+                           th:href="@{/rooms/{roomId}(roomId=${room.id})}"
+                           th:text="${room.id}"></a>
+                    </span>
+                    <span class="d-block text-muted text-truncate" th:text="${room.description}"></span>
+                    <hr class="text-opacity-50 text-secondary">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+<footer th:replace="/assets/html/base::footer"></footer>
+</body>
+</html>

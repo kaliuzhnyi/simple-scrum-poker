@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Room</title>
+
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/bootsrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="../../static/js/bootstrap.bundle.js"></script>
+    <script src="https://kit.fontawesome.com/cd8a5ef3be.js" crossorigin="anonymous"></script>
+    <!--*/-->
+
+    <th:block th:replace="~{/assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{/assets/html/base::header}"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+
+        <div class="col-md-10 mb-3">
+
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-11">
+                    <h2 th:text="${room.title}">Room title</h2>
+                </div>
+                <div class="col-1" th:if="${isOwner}?:false">
+                    <!--<a class="link-primary text-decoration-none float-end" href="#" th:href="@{/rooms/{roomId}/edit(roomId=${room.id})}">Edit room</a>-->
+                    <div class="btn-group dropend float-end">
+                        <button type="button" class="btn btn-link link-secondary opacity-50" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" th:href="@{/rooms/{roomId}/edit(roomId=${room.id})}">Edit room</a></li>
+                            <li>
+                                <form th:method="delete"
+                                    th:action="@{/rooms/{roomId}/guests(roomId=${room.id})}">
+                                    <button type="submit" class="dropdown-item">Remove all guests</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <p th:text="${room.description}">Room description</p>
+            </div>
+
+            <div class="row mb-4">
+                <h4>Voting results</h4>
+                <th:block th:if="${#lists.isEmpty(roomGuests)}">
+                    <div class="alert alert-warning opacity-50" role="alert">No guests yet... No votes yet... Invite someone.</div>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(roomGuests)}">
+                    <div>
+                        <!--VOTES-->
+                        <table class="table table-hover align-middle">
+                            <tbody>
+                            <!--/* PROTOTYPE-->
+                            <tr>
+                                <td>
+                                    <p class="text-body fw-bold mb-0">Ivan Kaliuzhnyi</p>
+                                    <p class="text-primary text-opacity-75 mb-0">kaliuzhnyi.ivan@gmail.com</p>
+                                </td>
+                                <td>
+                                    <span class="text-secondary">My super comment. This is an easy task. I'll do it.</span>
+                                </td>
+                                <td class="text-center">
+                                    <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond-fill"></i>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group dropend">
+                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-gear-fill"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="text-body fw-bold mb-0">Ivan Kaliuzhnyi</p>
+                                    <p class="text-primary text-opacity-75 mb-0">kaliuzhnyi.ivan@gmail.com</p>
+                                </td>
+                                <td>
+                                    <span class="text-secondary">My super comment. This is an easy task. I'll do it.</span>
+                                </td>
+                                <td class="text-center">
+                                    <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond"></i>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group dropend">
+                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-gear-fill"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!--*/-->
+
+                            <!--/*/
+                            <tr th:each="roomGuest : ${#lists.sort(roomGuests, roomGuestsComparatorVotePeriod)}">
+
+                                <td>
+                                    <p class="text-body fw-bold mb-0"
+                                       th:text="*{roomGuest.name}">Ivan Kaliuzhnyi</p>
+                                    <p class="text-primary text-opacity-75 mb-0"
+                                       th:text="*{roomGuest.email}">kaliuzhnyi.ivan@gmail.com</p>
+                                </td>
+                                <td>
+                                    <span class="text-secondary"
+                                          th:text="*{roomGuest.voteComment}">My super comment. This is an easy task. I'll do it.</span>
+                                </td>
+                                <td class="text-center"
+                                    th:with="voteIcons = ${T(java.util.List).of('bi-suit-diamond','bi-suit-heart','bi-suit-spade','bi-suit-club')}">
+                                    <i class="bi fs-2 text-primary text-opacity-75"
+                                       th:if="${roomGuest.vote ne null}"
+                                       th:classappend="|${voteIcons.get(T(java.util.concurrent.ThreadLocalRandom).current().nextInt(voteIcons.size()))}-fill|"></i>
+                                    <i class="bi fs-2 text-primary text-opacity-75"
+                                       th:if="${roomGuest.vote eq null}"
+                                       th:classappend="${voteIcons.get(T(java.util.concurrent.ThreadLocalRandom).current().nextInt(voteIcons.size()))}"></i>
+                                </td>
+                                <td class="text-end"
+                                    th:if="${isOwner}?:false">
+                                    <div class="btn-group dropend">
+                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-gear-fill"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            /*/-->
+                            </tbody>
+                        </table>
+                        <!--VOTES PRESENTATION MODE-->
+                        <th:block th:if="${isOwner}">
+                            <button type="button" class="btn btn-link float-end" data-bs-toggle="modal"
+                                    data-bs-target="#votesPresentationModal">Presentation mode
+                            </button>
+                            <div class="modal fade" id="votesPresentationModal" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Votes</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-borderless table-hover align-middle">
+                                                <tbody>
+                                                <tr th:each="roomGuest : ${#lists.sort(roomGuests, roomGuestsComparatorVote)}">
+                                                    <!--/*@thymesVar id="roomGuest" type="com.simplescrumpoker.dto.guest.RoomGuestProjection"*/-->
+                                                    <td>
+                                                        <p class="text-body fw-bold mb-0"
+                                                           th:text="*{roomGuest.name}">Ivan Kaliuzhnyi</p>
+                                                        <p class="text-primary text-opacity-75 mb-0"
+                                                           th:text="*{roomGuest.email}">kaliuzhnyi.ivan@gmail.com</p>
+                                                    </td>
+                                                    <td>
+                                                    <span class="text-secondary"
+                                                          th:text="*{roomGuest.voteComment}">My super comment. This is an easy task. I'll do it.</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                    <span class="fw-bold fs-5 opacity-50"
+                                                          th:if="*{roomGuest.vote}"
+                                                          th:text="*{roomGuest.vote.textRepresentation()}"
+                                                          th:classappend="|
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN ? 'text-danger' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_0 ? 'text-warning' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_1 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_2 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_3 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_5 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_8 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_13 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_20 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_40 ? 'text-primary' : ''}
+                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_100 ? 'text-warning' : ''}
+                                                          |">5</span>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </th:block>
+            </div>
+
+            <div class="row mb-4">
+                <h4>Vote</h4>
+                <form name="make-vote"
+                      th:name="make-vote"
+                      th:method="post"
+                      th:action="@{/rooms/{roomId}/vote(roomId=${room.id})}"
+                      th:object="${vote}">
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Comment"
+                               th:field="*{comment}"
+                               th:errorclass="is-invalid">
+                        <label for="title">Comment</label>
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('comment')}"
+                             th:errors="*{comment}">Comment error
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-between mx-n2 my-n2">
+                        <th:block th:if="${voteCards}"
+                                  th:each="voteCard : ${voteCards}">
+                            <button type="submit"
+                                    name="value"
+                                    class="btn border border-2 opacity-50 fw-bold mx-2 my-2"
+                                    th:value="${voteCard}"
+                                    th:autofocus="${voteCard == vote.value}"
+                                    th:text="${voteCard.textRepresentation()}"
+                                    th:classappend="|
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN ? 'btn-outline-danger border-danger' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_0 ? 'btn-outline-warning border-warning' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_1 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_2 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_3 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_5 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_8 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_13 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_20 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_40 ? 'btn-outline-primary border-primary' : ''}
+                                        ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_100 ? 'btn-outline-warning border-warning' : ''}
+                                        |"
+                            >
+                            </button>
+                        </th:block>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="/assets/html/base::footer"></footer>
+</body>
+</html>

@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/simplescrum
+    username: postgres
+    password: postgres0126377
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  thymeleaf:
+    mode: html
+    encoding: utf-8
+    cache: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+    hiddenmethod:
+      filter:
+        enabled: true
+  web:
+    resources:
+      add-mappings: true
+  liquibase:
+    enabled: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: simple.scrum.poker@gmail.com
+    password: dmsovakhpdbgqqsa
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+server:
+  error:
+    whitelabel:
+      enabled: false
+  port: 9090

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<th:block th:fragment="form">
+
+    <!--/*@thymesVar id="alert" type="com.simplescrumpoker.controller.alert.Alert"*/-->
+
+    <div class="alert alert-primary" role="alert"
+         th:if="${alert} and ${alert.isInfo()}"
+         th:text="#{${alert.getMessage()}}">Alert. Some info message.
+    </div>
+
+    <div class="alert alert-danger" role="alert"
+         th:if="${alert} and ${alert.isError()}"
+         th:text="#{${alert.getMessage()}}">Alert. Some error message.
+    </div>
+
+    <div class="alert alert-warning" role="alert"
+         th:if="${alert} and ${alert.isWarn()}"
+         th:text="#{${alert.getMessage()}}">Alert. Some warn message.
+    </div>
+
+    <div class="alert alert-success" role="alert"
+         th:if="${alert} and ${alert.isSuccess()}"
+         th:text="#{${alert.getMessage()}}">Alert. Some success message.
+    </div>
+
+</th:block>
+
+<th:block th:fragment="form-global-errors">
+    <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+        <span th:if="${#fields.globalErrors().size() == 1}"
+              th:text="${#fields.globalErrors().get(0)}"></span>
+        <ul class="mb-0" th:if="${#fields.globalErrors().size() > 1}">
+            <li th:each="globalError : ${#fields.globalErrors()}" th:text="${globalError}"></li>
+        </ul>
+    </div>
+</th:block>
+
+</body>
+</html>

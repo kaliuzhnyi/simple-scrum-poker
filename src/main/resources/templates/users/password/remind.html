@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Remind password</title>
+
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    <!--*/-->
+
+    <th:block th:replace="~{/assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{/assets/html/base::header}"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-4">
+            <h2 class="mb-4">Remind password</h2>
+            <form name="user-remind-password"
+                  th:method="post"
+                  th:action="@{/users/password/remind}"
+                  th:object="${userRemindPassword}">
+                <div class="form-floating mb-4">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                           th:field="*{email}"
+                           th:errorclass="is-invalid">
+                    <label for="email">Email</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}">Email error</div>
+                </div>
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Remind</button>
+                <th:block th:replace="~{/assets/html/alert::form}"></th:block>
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{/assets/html/base::footer}"></footer>
+</body>
+</html>
