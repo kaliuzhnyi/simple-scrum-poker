@@ -31,11 +31,6 @@ public class Room extends AuditableEntity implements MappableEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-//    @ToString.Exclude
-//    @Builder.Default
-//    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Guest> guests = new ArrayList<>();
-
     @ToString.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
@@ -76,18 +71,5 @@ public class Room extends AuditableEntity implements MappableEntity {
     public void removeRoomGuest(GuestRoom guestRoom) {
         guestRooms.remove(guestRoom);
     }
-
-//    public void addGuest(Guest guest) {
-//        guests.add(guest);
-//        if (!guest.getRooms().contains(this)) {
-//            guest.addRoom(this);
-//        }
-//    }
-//    public void removeGuest(Guest guest) {
-//        guests.remove(guest);
-//        if (guest.getRooms().contains(this)) {
-//            guest.removeRoom(this);
-//        }
-//    }
 
 }

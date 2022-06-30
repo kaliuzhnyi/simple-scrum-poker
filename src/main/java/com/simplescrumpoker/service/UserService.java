@@ -61,14 +61,18 @@ public class UserService implements UserDetailsService {
     public UserReadDto findById(Long userId) {
         return userRepository.findById(userId)
                 .map(userReadMapper::map)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found by id"));
+                .orElseThrow(() -> {
+                    throw new UsernameNotFoundException("User not found by id: %s".formatted(userId));
+                });
     }
 
     @Override
     public UserSecurityDetailsDto loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .map(userSecurityDetailsMapper::map)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found by username/email"));
+                .orElseThrow(() -> {
+                    throw new UsernameNotFoundException("User not found by username/email: %s".formatted(username));
+                });
     }
 
     @Transactional
@@ -82,7 +86,12 @@ public class UserService implements UserDetailsService {
 
 
     public boolean currentUserIdEquals(Long userId) {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Authentication::getPrincipal).map(UserSecurityDetailsDto.class::cast).map(UserSecurityDetailsDto::getId).map(userId::equals).orElse(false);
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getPrincipal)
+                .map(UserSecurityDetailsDto.class::cast)
+                .map(UserSecurityDetailsDto::getId)
+                .map(userId::equals)
+                .orElse(false);
     }
 
     public boolean existsById(Long id) {

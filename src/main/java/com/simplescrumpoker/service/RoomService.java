@@ -6,32 +6,31 @@ import com.simplescrumpoker.dto.room.RoomCreateDto;
 import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.room.RoomUpdateDto;
 import com.simplescrumpoker.dto.vote.VoteReadDto;
+import com.simplescrumpoker.exception.GuestNotFoundException;
 import com.simplescrumpoker.exception.UserNotFoundException;
 import com.simplescrumpoker.mapper.guest.GuestReadMapper;
 import com.simplescrumpoker.mapper.room.RoomCreateMapper;
 import com.simplescrumpoker.mapper.room.RoomReadMapper;
 import com.simplescrumpoker.mapper.room.RoomUpdateMapper;
 import com.simplescrumpoker.mapper.vote.VoteReadMapper;
+import com.simplescrumpoker.model.Guest;
+import com.simplescrumpoker.repository.GuestRepository;
 import com.simplescrumpoker.repository.RoomRepository;
 import com.simplescrumpoker.repository.UserRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.PushBuilder;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RoomService {
-    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
+    private final GuestRepository guestRepository;
     private final RoomCreateMapper roomCreateMapper;
     private final RoomUpdateMapper roomUpdateMapper;
     private final RoomReadMapper roomReadMapper;
@@ -40,14 +39,19 @@ public class RoomService {
 
     @Transactional
     public RoomReadDto create(RoomCreateDto objectDto, Long ownerId) {
-        var user = userRepository.findById(ownerId)
+        var owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> {
-                    throw new UserNotFoundException();
+                    throw new UserNotFoundException("User(owner) not found by id: %s".formatted(ownerId));
+                });
+        Guest ownerGuest = guestRepository.findByUserId(ownerId)
+                .orElseThrow(() -> {
+                    throw new GuestNotFoundException("Guest(owner) not found by user(id): %s".formatted(ownerId));
                 });
         return Optional.of(objectDto)
                 .map(roomCreateMapper::mapToEntity)
                 .map(entity -> {
-                    entity.setOwner(user);
+                    entity.setOwner(owner);
+                    entity.addRoomGuest(ownerGuest);
                     return entity;
                 })
                 .map(roomRepository::save)
@@ -66,6 +70,7 @@ public class RoomService {
                 .map(roomReadMapper::mapToDto)
                 .toList();
     }
+
     public Optional<RoomReadDto> read(Long roomId) {
         return roomRepository.findById(roomId)
                 .map(roomReadMapper::mapToDto);
@@ -74,10 +79,6 @@ public class RoomService {
     public Optional<RoomReadDto> read(Long roomId, List<GuestReadDto> guests, List<VoteReadDto> votes) {
         return roomRepository.findById(roomId)
                 .map(entity -> {
-//                    Optional.ofNullable(guests)
-//                            .ifPresent(list -> entity.getGuests().stream()
-//                                    .map(guestReadMapper::mapToDto)
-//                                    .forEach(list::add));
                     Optional.ofNullable(votes)
                             .ifPresent(list -> entity.getVotes().stream()
                                     .map(voteReadMapper::mapToDto)
