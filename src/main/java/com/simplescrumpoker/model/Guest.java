@@ -46,7 +46,7 @@ public class Guest extends BaseEntity implements MappableEntity {
 
     public void setUser(User user) {
 
-        if (Objects.equals(this.user.getGuest(), this)) {
+        if (Objects.nonNull(this.user) && Objects.equals(this.user.getGuest(), this)) {
             this.user.setGuest(null);
         }
 

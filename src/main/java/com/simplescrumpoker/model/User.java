@@ -42,7 +42,7 @@ public class User extends AuditableEntity implements MappableEntity {
 
     public void setGuest(Guest guest) {
 
-        if (Objects.equals(this.guest.getUser(), this)) {
+        if (Objects.nonNull(this.guest) && Objects.equals(this.guest.getUser(), this)) {
             this.guest.getUser().setGuest(null);
         }
 
