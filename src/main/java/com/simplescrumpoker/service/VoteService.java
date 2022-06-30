@@ -53,4 +53,9 @@ public class VoteService {
                 .orElseThrow();
     }
 
+    @Transactional
+    public void removeAll(Long roomId) {
+        voteRepository.removeAllByRoomId(roomId);
+    }
+
 }

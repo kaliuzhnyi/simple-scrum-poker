@@ -38,10 +38,6 @@ public class User extends AuditableEntity implements MappableEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-//    @MapsId
-//    @JoinTable(name = "guests_users",
-//            inverseJoinColumns = @JoinColumn(name = "guest_id", referencedColumnName = "id", nullable = false, unique = true),
-//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Guest guest;
 
 }

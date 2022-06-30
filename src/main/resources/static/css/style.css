@@ -1,5 +1,4 @@
-.table td.fit,
-.table th.fit {
-    white-space: nowrap;
-    width: 1%;
+.bg-navbar {
+    background-color: #ffffff;
+    opacity: 0.95 !important;
 }

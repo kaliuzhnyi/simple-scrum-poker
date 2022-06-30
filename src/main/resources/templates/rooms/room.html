@@ -40,6 +40,12 @@
                                     <button type="submit" class="dropdown-item">Remove all guests</button>
                                 </form>
                             </li>
+                            <li>
+                                <form th:method="delete"
+                                      th:action="@{/rooms/{roomId}/votes(roomId=${room.id})}">
+                                    <button type="submit" class="dropdown-item">Clear all votes</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -71,16 +77,6 @@
                                 <td class="text-center">
                                     <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond-fill"></i>
                                 </td>
-                                <td class="text-end">
-                                    <div class="btn-group dropend">
-                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-gear-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -92,16 +88,6 @@
                                 </td>
                                 <td class="text-center">
                                     <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond"></i>
-                                </td>
-                                <td class="text-end">
-                                    <div class="btn-group dropend">
-                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-gear-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
-                                        </ul>
-                                    </div>
                                 </td>
                             </tr>
                             <!--*/-->
@@ -127,17 +113,6 @@
                                     <i class="bi fs-2 text-primary text-opacity-75"
                                        th:if="${roomGuest.vote eq null}"
                                        th:classappend="${voteIcons.get(T(java.util.concurrent.ThreadLocalRandom).current().nextInt(voteIcons.size()))}"></i>
-                                </td>
-                                <td class="text-end"
-                                    th:if="${isOwner}?:false">
-                                    <div class="btn-group dropend">
-                                        <button type="button" class="btn btn-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-gear-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Block guest</a></li>
-                                        </ul>
-                                    </div>
                                 </td>
                             </tr>
                             /*/-->
@@ -205,28 +180,30 @@
             </div>
 
             <div class="row mb-4">
-                <h4>Vote</h4>
+                <h4 class="mb-3">Vote</h4>
                 <form name="make-vote"
                       th:name="make-vote"
                       th:method="post"
                       th:action="@{/rooms/{roomId}/vote(roomId=${room.id})}"
                       th:object="${vote}">
                     <div class="form-floating mb-4">
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Comment"
+                        <input type="text" class="form-control" id="comment" name="comment" placeholder="Comment"
                                th:field="*{comment}"
                                th:errorclass="is-invalid">
-                        <label for="title">Comment</label>
+                        <label for="comment">Comment</label>
                         <div class="invalid-feedback"
                              th:if="${#fields.hasErrors('comment')}"
                              th:errors="*{comment}">Comment error
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap justify-content-between mx-n2 my-n2">
+
+                    <!--/*/
+                    <div class="d-flex flex-wrap justify-content-between row mx-n2 my-n3">
                         <th:block th:if="${voteCards}"
                                   th:each="voteCard : ${voteCards}">
                             <button type="submit"
                                     name="value"
-                                    class="btn border border-2 opacity-50 fw-bold mx-2 my-2"
+                                    class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3"
                                     th:value="${voteCard}"
                                     th:autofocus="${voteCard == vote.value}"
                                     th:text="${voteCard.textRepresentation()}"
@@ -247,6 +224,23 @@
                             </button>
                         </th:block>
                     </div>
+                    /*/-->
+
+                    <!--/*-->
+                    <div class="d-flex flex-wrap justify-content-between row mx-n2 my-n3">
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-danger border-danger" value="VALUE_UNKNOWN" autofocus="autofocus">?</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-warning border-warning" value="VALUE_UNKNOWN" autofocus="autofocus">0</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">1</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">2</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">3</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">5</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">8</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">13</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">20</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-primary border-primary" value="VALUE_UNKNOWN" autofocus="autofocus">40</button>
+                        <button type="submit" name="value" class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3 btn-outline-warning border-warning" value="VALUE_UNKNOWN" autofocus="autofocus">100</button>
+                    </div>
+                    <!--*/-->
                 </form>
             </div>
         </div>

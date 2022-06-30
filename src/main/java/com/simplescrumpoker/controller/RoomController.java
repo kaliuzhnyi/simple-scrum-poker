@@ -25,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -56,7 +57,8 @@ public class RoomController {
     public String roomShowPage(Model model,
                                @PathVariable("roomId") Long roomId,
                                @SessionAttribute(value = "guest", required = false) GuestReadDto guestReadDto,
-                               @AuthenticationPrincipal UserSecurityDetailsDto userSecurityDetailsDto) {
+                               @AuthenticationPrincipal UserSecurityDetailsDto userSecurityDetailsDto,
+                               HttpSession httpSession) {
         var roomReadDto = roomService.read(roomId)
                 .orElseThrow(() -> {
                     throw new RoomNotFoundException();
@@ -200,6 +202,27 @@ public class RoomController {
             model.addAttribute("alert", Alert.ofError("room.vote.add.error"));
             return VIEW_ROOM;
         }
+    }
+
+    @DeleteMapping("/{roomId}/votes")
+    public String votesRemove(Model model,
+                              @PathVariable("roomId") Long roomId,
+                              @AuthenticationPrincipal UserSecurityDetailsDto userSecurityDetailsDto) {
+        var roomReadDto = roomService.read(roomId)
+                .orElseThrow(() -> {
+                    throw new RoomNotFoundException("Room not found by id:%s".formatted(roomId));
+                });
+
+        var isOwner = Optional.ofNullable(userSecurityDetailsDto)
+                .filter(v -> Objects.equals(v.getId(), roomReadDto.getOwner().getId()))
+                .isPresent();
+        if (!isOwner) {
+            return "redirect:/rooms/%s".formatted(roomId);
+        }
+
+        voteService.removeAll(roomId);
+
+        return "redirect:/rooms/%s".formatted(roomId);
     }
 
     @DeleteMapping("/{roomId}/guests")

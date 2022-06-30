@@ -6,9 +6,16 @@
     <!--/*-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link rel="stylesheet" href="../static/css/bootsrap.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <script src="../static/js/bootstrap.bundle.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+
     <!--*/-->
 
     <th:block th:replace="~{assets/html/base::head}"></th:block>
@@ -17,55 +24,39 @@
 <header th:replace="~{assets/html/base::header}"></header>
 <main class="container my-5">
     <div class="row justify-content-around">
-        <div class="col-md-4">
-<!--            <img class="img-fluid"-->
-<!--                 src="../static/image/Inspiration.ai"-->
-<!--                 th:src="@{/image/Inspiration.svg}">-->
 
-
+        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+<!--            <div class="carousel-indicators">-->
+<!--                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>-->
+<!--                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>-->
+<!--                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>-->
+<!--            </div>-->
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="5000">
+                    <img class="d-block mx-auto h-auto" src="../static/image/team_ua_640.svg" th:src="@{/image/team_ua_640.svg}">
+                    <div class="d-none d-md-block text-center mt-5">
+                        <h2>Discuss and evaluate tasks with your team - easy and simple!</h2>
+                        <span>Don't delay! <a class="link-primary" href="#" th:href="@{/signup}">Registration</a></span>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="5000">
+                    <img class="d-block mx-auto h-auto" src="../static/image/team_join_ua_640.svg" th:src="@{/image/team_join_ua_640.svg}">
+                    <div class="d-none d-md-block text-center mt-5">
+                        <h2>Join your team in the voting room!</h2>
+                        <span>Your team is waiting for you! <a class="link-primary" href="#" th:href="@{/rooms/enter}">Enter the room</a></span>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <div class="col-md-4">
-            <h2 class="mb-4">Enter the room</h2>
-            <form name="room-enter"
-                  th:method="post"
-                  th:action="@{/rooms/enter}"
-                  th:object="${roomEnter}">
-                <div class="form-floating mb-4">
-                    <input type="text" class="form-control" id="roomEnterId" name="id"
-                           placeholder="Room ID"
-                           th:field="*{id}">
-                    <label for="roomEnterId">Room ID</label>
-                    <div class="invalid-feedback"
-                         th:if="${#fields.hasErrors('id')}"
-                         th:errors="*{id}">Room ID error
-                    </div>
-                </div>
-                <div class="form-floating mb-4">
-                    <input type="password" class="form-control" id="roomEnterPassword" name="password"
-                           placeholder="Room password"
-                           th:field="*{password}">
-                    <label for="roomEnterPassword">Room password</label>
-                    <div class="invalid-feedback"
-                         th:if="${#fields.hasErrors('password')}"
-                         th:errors="*{password}">Room password error
-                    </div>
-                </div>
 
-                <div class="form-floating mb-4">
-                    <input type="text" class="form-control" id="roomEnterGuestName" name="guest-name"
-                           placeholder="User name"
-                           th:field="*{guestName}">
-                    <label for="roomEnterGuestName">User name</label>
-                    <div class="invalid-feedback"
-                         th:if="${#fields.hasErrors('guestName')}"
-                         th:errors="*{guestName}">Guest name error
-                    </div>
-                </div>
-
-                <button class="btn btn-outline-primary btn-lg mb-4" type="submit">Enter the room</button>
-            </form>
-            <th:block th:insert="~{assets/html/alert::form}"></th:block>
-        </div>
     </div>
 </main>
 <footer th:replace="~{assets/html/base::footer}"></footer>

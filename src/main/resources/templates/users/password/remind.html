@@ -39,7 +39,10 @@
                          th:if="${#fields.hasErrors('email')}"
                          th:errors="*{email}">Email error</div>
                 </div>
-                <button class="btn btn-primary btn-lg mb-4" type="submit">Remind</button>
+                <div class="form-floating d-flex justify-content-between mb-4">
+                    <button class="btn btn-primary btn-lg" type="submit">Remind</button>
+                    <span class="text-secondary align-self-center">Back to <a class="link-primary" href="#" th:href="@{/signin}">Sign Ip</a></span>
+                </div>
                 <th:block th:replace="~{assets/html/alert::form}"></th:block>
             </form>
         </div>

@@ -1,5 +1,6 @@
 package com.simplescrumpoker.repository;
 
+import com.simplescrumpoker.model.Room;
 import com.simplescrumpoker.model.Vote;
 import com.simplescrumpoker.model.VoteCard;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,5 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     Optional<Vote> findByRoomIdAndGuestId(Long roomId, Long guestId);
 
+    void removeAllByRoomId(Long roomId);
 }

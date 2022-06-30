@@ -1,5 +1,7 @@
 package com.simplescrumpoker.config;
 
+import com.simplescrumpoker.controller.SignInController;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,7 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final SignInController signInController;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -36,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .passwordParameter("password")
                     .loginPage("/signin")
                     .defaultSuccessUrl("/")
+                    .successHandler(signInController)
                     .failureUrl("/signin")
                     .and()
 //                .rememberMe()
