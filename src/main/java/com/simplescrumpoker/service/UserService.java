@@ -38,11 +38,14 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByEmail(objectDto.getEmail())) {
             throw new UserExistsException();
         }
-        return Optional.of(objectDto).map(dto -> {
-            var entity = userCreateMapper.mapToEntity(dto);
-            entity.setGuest(Guest.builder().name(entity.getName()).type(GuestType.USER).build());
-            return entity;
-        }).map(userRepository::save).map(userReadMapper::map).orElseThrow();
+        return Optional.of(objectDto)
+                .map(dto -> {
+                    var entity = userCreateMapper.mapToEntity(dto);
+                    entity.setGuest(Guest.builder().name(entity.getName()).type(GuestType.USER).build());
+                    return entity;
+                })
+                .map(userRepository::save)
+                .map(userReadMapper::map).orElseThrow();
     }
 
     public Optional<UserReadDto> read(Long userId) {

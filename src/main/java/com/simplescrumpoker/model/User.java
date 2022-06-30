@@ -8,11 +8,11 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
-//@EqualsAndHashCode(exclude = {"guest", "rooms"})
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -39,5 +39,17 @@ public class User extends AuditableEntity implements MappableEntity {
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Guest guest;
+
+    public void setGuest(Guest guest) {
+
+        if (Objects.equals(this.guest.getUser(), this)) {
+            this.guest.getUser().setGuest(null);
+        }
+
+        this.guest = guest;
+        if (Objects.nonNull(guest) && !Objects.equals(guest.getUser(), this)) {
+            guest.setUser(this);
+        }
+    }
 
 }
