@@ -5,11 +5,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @EqualsAndHashCode
@@ -39,6 +37,24 @@ public class User extends AuditableEntity implements MappableEntity {
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Guest guest;
+
+
+    public void addRoom(Room room) {
+        rooms.add(room);
+
+        if (Objects.nonNull(room) && !Objects.equals(room.getOwner(), this)) {
+            room.setOwner(this);
+        }
+    }
+
+    public void removeRoom(Room room) {
+        rooms.remove(room);
+
+        if (Objects.nonNull(room) && Objects.equals(room.getOwner(), this)) {
+            room.setOwner(null);
+        }
+    }
+
 
     public void setGuest(Guest guest) {
 

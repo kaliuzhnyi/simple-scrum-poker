@@ -5,8 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(exclude = {"guestRooms", "votes"})
@@ -33,13 +35,28 @@ public class Room extends AuditableEntity implements MappableEntity {
 
     @ToString.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GuestRoom> guestRooms = new ArrayList<>();
 
     @ToString.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Vote> votes = new ArrayList<>();
+
+
+    public void setOwner(User owner) {
+
+        if (Objects.nonNull(this.owner) && this.owner.getRooms().contains(this)) {
+            this.owner.removeRoom(this);
+        }
+
+        this.owner = owner;
+        if (Objects.nonNull(owner) && !owner.getRooms().contains(this)) {
+            owner.addRoom(this);
+        }
+
+    }
+
 
     public void addVote(Vote vote) {
         votes.add(vote);
@@ -55,21 +72,31 @@ public class Room extends AuditableEntity implements MappableEntity {
         }
     }
 
-    public void addRoomGuest(GuestRoom guestRoom) {
-        guestRooms.add(guestRoom);
-    }
 
     public void addRoomGuest(Guest guest) {
         GuestRoom guestRoom = GuestRoom.builder()
                 .guest(guest)
                 .room(this)
                 .accessStatus(true)
+                .accessDate(Instant.now())
                 .build();
         addRoomGuest(guestRoom);
     }
 
+    public void addRoomGuest(GuestRoom guestRoom) {
+        guestRooms.add(guestRoom);
+
+        if (Objects.nonNull(guestRoom) && !Objects.equals(guestRoom.getRoom(), this)) {
+            guestRoom.setRoom(this);
+        }
+    }
+
     public void removeRoomGuest(GuestRoom guestRoom) {
         guestRooms.remove(guestRoom);
+
+        if (Objects.nonNull(guestRoom) && Objects.equals(guestRoom.getRoom(), this)) {
+            guestRoom.setRoom(null);
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import com.simplescrumpoker.mapper.MappableEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class Guest extends BaseEntity implements MappableEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "guest", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "guest", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GuestRoom> guestRooms = new ArrayList<>();
 
     @ToString.Exclude
@@ -73,21 +74,31 @@ public class Guest extends BaseEntity implements MappableEntity {
         }
     }
 
-    public void addRoomGuest(GuestRoom guestRoom) {
-        guestRooms.add(guestRoom);
-    }
 
     public void addRoomGuest(Room room) {
         GuestRoom guestRoom = GuestRoom.builder()
                 .guest(this)
                 .room(room)
                 .accessStatus(true)
+                .accessDate(Instant.now())
                 .build();
         addRoomGuest(guestRoom);
     }
 
+    public void addRoomGuest(GuestRoom guestRoom) {
+        guestRooms.add(guestRoom);
+
+        if (Objects.nonNull(guestRoom) && !Objects.equals(guestRoom.getGuest(), this)) {
+            guestRoom.setGuest(this);
+        }
+    }
+
     public void removeRoomGuest(GuestRoom guestRoom) {
         guestRooms.remove(guestRoom);
+
+        if (Objects.nonNull(guestRoom) && Objects.equals(guestRoom.getGuest(), this)) {
+            guestRoom.setGuest(null);
+        }
     }
 
 }

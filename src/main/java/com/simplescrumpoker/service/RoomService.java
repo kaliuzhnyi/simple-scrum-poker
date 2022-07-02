@@ -43,15 +43,11 @@ public class RoomService {
                 .orElseThrow(() -> {
                     throw new UserNotFoundException("User(owner) not found by id: %s".formatted(ownerId));
                 });
-        Guest ownerGuest = guestRepository.findByUserId(ownerId)
-                .orElseThrow(() -> {
-                    throw new GuestNotFoundException("Guest(owner) not found by user(id): %s".formatted(ownerId));
-                });
         return Optional.of(objectDto)
                 .map(roomCreateMapper::mapToEntity)
                 .map(entity -> {
                     entity.setOwner(owner);
-                    entity.addRoomGuest(ownerGuest);
+                    entity.addRoomGuest(owner.getGuest());
                     return entity;
                 })
                 .map(roomRepository::save)
