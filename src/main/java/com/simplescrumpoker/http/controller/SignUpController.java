@@ -1,4 +1,4 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
 import com.simplescrumpoker.dto.user.UserCreateDto;
 import com.simplescrumpoker.service.UserService;

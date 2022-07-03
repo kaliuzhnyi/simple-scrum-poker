@@ -37,6 +37,10 @@ spring:
           auth: true
           starttls:
             enable: true
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    enabled: true
 #server:
 #  error:
 #    whitelabel:

@@ -1,4 +1,22 @@
+:root {
+    --ua-flag-color-1: #015cbf;
+    --ua-flag-color-2: #fed600;
+}
+
 .bg-navbar {
     background-color: #ffffff;
     opacity: 0.95 !important;
+}
+
+.bg-ua-flag-1 {
+    background-color: var(--ua-flag-color-1);
+}
+.bg-ua-flag-2 {
+    background-color: var(--ua-flag-color-2);
+}
+.text-ua-flag-1 {
+    color: var(--ua-flag-color-1);
+}
+.text-ua-flag-2 {
+    color: var(--ua-flag-color-2);
 }

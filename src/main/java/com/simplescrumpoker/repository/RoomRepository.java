@@ -33,12 +33,14 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                     "g.type, " +
                     "v.value vote, " +
                     "v.comment voteComment," +
-                    "v.last_modified_date votePeriod " +
+                    "v.last_modified_date votePeriod, " +
+                    "case when cast(r.owner_id as bigint) = cast(u.id as bigint) then true else false end isOwner " +
                     "from guests_rooms gr " +
                     "join guests g on g.id = gr.guest_id " +
                     "left join guests_users gu on gu.guest_id = g.id " +
                     "left join users u on u.id = gu.user_id " +
                     "left join votes v on v.guest_id = g.id and v.room_id = gr.room_id " +
+                    "left join rooms r on r.owner_id = u.id and r.id = :roomId " +
                     "where gr.room_id = :roomId and access_status = true")
     List<RoomGuestProjection> guestsRoomGuestProjection(Long roomId);
 

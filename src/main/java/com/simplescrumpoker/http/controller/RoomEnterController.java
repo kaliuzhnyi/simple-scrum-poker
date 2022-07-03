@@ -1,4 +1,4 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
 import com.simplescrumpoker.dto.guest.GuestCreateDto;
 import com.simplescrumpoker.dto.guest.GuestReadDto;

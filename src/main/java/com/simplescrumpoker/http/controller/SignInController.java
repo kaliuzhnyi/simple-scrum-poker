@@ -1,7 +1,5 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
-import com.simplescrumpoker.controller.alert.Alert;
-import com.simplescrumpoker.dto.guest.GuestReadDto;
 import com.simplescrumpoker.dto.user.UserEnterDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.exception.GuestNotFoundException;
@@ -9,8 +7,6 @@ import com.simplescrumpoker.service.GuestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 

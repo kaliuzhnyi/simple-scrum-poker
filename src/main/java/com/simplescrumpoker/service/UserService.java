@@ -58,14 +58,6 @@ public class UserService implements UserDetailsService {
                 .map(userUpdateProfileMapper::mapToDto);
     }
 
-    public UserReadDto findById(Long userId) {
-        return userRepository.findById(userId)
-                .map(userReadMapper::map)
-                .orElseThrow(() -> {
-                    throw new UsernameNotFoundException("User not found by id: %s".formatted(userId));
-                });
-    }
-
     @Override
     public UserSecurityDetailsDto loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)

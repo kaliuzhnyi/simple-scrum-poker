@@ -1,12 +1,13 @@
-package com.simplescrumpoker.controller.exception;
+package com.simplescrumpoker.http.exception;
 
+import com.simplescrumpoker.http.controller.PackageMarker;
 import com.simplescrumpoker.model.ExceptionInfo;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-@ControllerAdvice
+@ControllerAdvice(basePackageClasses = PackageMarker.class)
 class ExceptionController {
 
 //    @ExceptionHandler(RuntimeException.class)

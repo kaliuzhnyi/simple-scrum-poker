@@ -1,4 +1,4 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
 import com.simplescrumpoker.dto.room.RoomEnterDto;
 import org.springframework.stereotype.Controller;

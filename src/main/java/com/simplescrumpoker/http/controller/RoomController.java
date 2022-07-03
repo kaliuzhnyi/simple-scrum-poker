@@ -1,11 +1,10 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
-import com.simplescrumpoker.controller.alert.Alert;
+import com.simplescrumpoker.http.alert.Alert;
 import com.simplescrumpoker.dto.guest.GuestReadDto;
 import com.simplescrumpoker.dto.guest.RoomGuestProjection;
 import com.simplescrumpoker.dto.room.RoomCreateDto;
 import com.simplescrumpoker.dto.room.RoomEnterDto;
-import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.room.RoomUpdateDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.dto.vote.VoteCreateDto;
@@ -16,7 +15,6 @@ import com.simplescrumpoker.service.GuestService;
 import com.simplescrumpoker.service.RoomService;
 import com.simplescrumpoker.service.VoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.Banner;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -1,6 +1,6 @@
-package com.simplescrumpoker.controller;
+package com.simplescrumpoker.http.controller;
 
-import com.simplescrumpoker.controller.alert.Alert;
+import com.simplescrumpoker.http.alert.Alert;
 import com.simplescrumpoker.dto.user.UserRemindPasswordDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.dto.user.UserSetPasswordDto;

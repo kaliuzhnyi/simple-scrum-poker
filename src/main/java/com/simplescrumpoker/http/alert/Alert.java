@@ -1,4 +1,4 @@
-package com.simplescrumpoker.controller.alert;
+package com.simplescrumpoker.http.alert;
 
 import lombok.Value;
 
