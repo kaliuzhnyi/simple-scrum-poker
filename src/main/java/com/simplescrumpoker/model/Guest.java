@@ -26,11 +26,10 @@ public class Guest extends BaseEntity implements MappableEntity {
     private GuestType type;
 
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "guests_users",
             joinColumns = @JoinColumn(name = "guest_id", referencedColumnName = "id", nullable = false, unique = true),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true))
     private User user;
 
     @ToString.Exclude

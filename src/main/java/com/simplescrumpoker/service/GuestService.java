@@ -2,19 +2,20 @@ package com.simplescrumpoker.service;
 
 import com.simplescrumpoker.dto.guest.GuestCreateDto;
 import com.simplescrumpoker.dto.guest.GuestReadDto;
+import com.simplescrumpoker.dto.guest.GuestVoteDto;
+import com.simplescrumpoker.dto.guest.GuestVoteView;
+import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.mapper.guest.GuestCreateMapper;
 import com.simplescrumpoker.mapper.guest.GuestReadMapper;
-import com.simplescrumpoker.model.Guest;
-import com.simplescrumpoker.model.GuestRoom;
 import com.simplescrumpoker.repository.GuestRepository;
 import com.simplescrumpoker.repository.RoomRepository;
 import com.simplescrumpoker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,6 +55,14 @@ public class GuestService {
                 .map(guestReadMapper::mapToDto);
     }
 
+    public List<GuestVoteView> readAllGuestVotesFromRoom(Long roomId) {
+        return guestRepository.findAllGuestVotesViewByRoomId(roomId);
+    }
+
+    public List<GuestVoteView> readAllGuestVotesFromRoom(RoomReadDto roomReadDto) {
+        return readAllGuestVotesFromRoom(roomReadDto.getId());
+    }
+
     public boolean presentInRoom(Long guestId, Long roomId) {
         return guestRepository.presentInRoom(guestId, roomId);
     }
@@ -61,10 +70,12 @@ public class GuestService {
     public boolean presentInRoom(GuestReadDto guestReadDto, Long roomId) {
         return presentInRoom(guestReadDto.getId(), roomId);
     }
+
     @Transactional
     public void addToRoom(Long guestId, Long roomId) {
         guestRepository.addToRoom(guestId, roomId);
     }
+
     @Transactional
     public void addToRoom(GuestReadDto guestReadDto, Long roomId) {
         addToRoom(guestReadDto.getId(), roomId);

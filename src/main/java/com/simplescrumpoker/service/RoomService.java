@@ -1,19 +1,16 @@
 package com.simplescrumpoker.service;
 
 import com.simplescrumpoker.dto.guest.GuestReadDto;
-import com.simplescrumpoker.dto.guest.RoomGuestProjection;
 import com.simplescrumpoker.dto.room.RoomCreateDto;
 import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.room.RoomUpdateDto;
 import com.simplescrumpoker.dto.vote.VoteReadDto;
-import com.simplescrumpoker.exception.GuestNotFoundException;
 import com.simplescrumpoker.exception.UserNotFoundException;
 import com.simplescrumpoker.mapper.guest.GuestReadMapper;
 import com.simplescrumpoker.mapper.room.RoomCreateMapper;
 import com.simplescrumpoker.mapper.room.RoomReadMapper;
 import com.simplescrumpoker.mapper.room.RoomUpdateMapper;
 import com.simplescrumpoker.mapper.vote.VoteReadMapper;
-import com.simplescrumpoker.model.Guest;
 import com.simplescrumpoker.repository.GuestRepository;
 import com.simplescrumpoker.repository.RoomRepository;
 import com.simplescrumpoker.repository.UserRepository;
@@ -81,10 +78,6 @@ public class RoomService {
                                     .forEach(list::add));
                     return roomReadMapper.mapToDto(entity);
                 });
-    }
-
-    public List<RoomGuestProjection> readGuests(Long roomId) {
-        return roomRepository.readAllGuests(roomId, RoomGuestProjection.class);
     }
 
     @Transactional

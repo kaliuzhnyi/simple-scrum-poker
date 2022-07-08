@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <script src="../../static/js/bootstrap.bundle.js"></script>
     <script src="../../static/js/jquery.js"></script>
-<!--    <script src="https://kit.fontawesome.com/cd8a5ef3be.js" crossorigin="anonymous"></script>-->
     <!--*/-->
     <th:block th:replace="~{assets/html/base::head}"></th:block>
 </head>
@@ -26,28 +25,10 @@
                     <h2 th:text="${room.title}">Room title</h2>
                 </div>
                 <div class="col-1" th:if="${isOwner}?:false">
-                    <!--<a class="link-primary text-decoration-none float-end" href="#" th:href="@{/rooms/{roomId}/edit(roomId=${room.id})}">Edit room</a>-->
                     <div class="btn-group dropend float-end">
                         <button type="button" class="btn btn-link link-secondary opacity-50" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear-fill"></i>
                         </button>
-                        <!--/*
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" th:href="@{/rooms/{roomId}/edit(roomId=${room.id})}">Edit room</a></li>
-                            <li>
-                                <form th:method="delete"
-                                    th:action="@{/rooms/{roomId}/guests(roomId=${room.id})}">
-                                    <button type="submit" class="dropdown-item" id="commandGuestsRemove">Remove all guests</button>
-                                </form>
-                            </li>
-                            <li>
-                                <form th:method="delete"
-                                      th:action="@{/rooms/{roomId}/votes(roomId=${room.id})}">
-                                    <button type="submit" class="dropdown-item" id="commandVotesRemove">Clear all votes</button>
-                                </form>
-                            </li>
-                        </ul>
-                        */-->
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#" th:href="@{/rooms/{roomId}/edit(roomId=${room.id})}">Edit room</a></li>
                             <li><button type="submit" class="dropdown-item" id="commandGuestsRemove">Remove all guests</button></li>
@@ -63,16 +44,16 @@
 
             <div class="row mb-4">
                 <h4>Voting results</h4>
-                <th:block th:if="${#lists.isEmpty(roomGuests)}">
+                <th:block th:if="${#lists.isEmpty(guestVotes)}">
                     <div class="alert alert-warning opacity-50" role="alert">No guests yet... No votes yet... Invite someone.</div>
                 </th:block>
-                <th:block th:if="${not #lists.isEmpty(roomGuests)}">
+                <th:block th:if="${not #lists.isEmpty(guestVotes)}">
                     <div>
                         <!--VOTES-->
                         <table class="table table-hover align-middle">
                             <!--/* PROTOTYPE-->
                             <tbody>
-                            <tr data-type="guestVote" data-is-owner="true">
+                            <tr data-type="guestVote" data-guest-is-owner="true">
                                 <td>
                                     <p class="text-body fw-bold mb-0">Ivan Kaliuzhnyi</p>
                                     <p class="text-primary text-opacity-75 mb-0">kaliuzhnyi.ivan@gmail.com</p>
@@ -84,16 +65,16 @@
                                     <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond-fill" data-type="guestVoteValueIcon"></i>
                                 </td>
                             </tr>
-                            <tr data-type="guestVote" data-is-owner="false">
+                            <tr data-type="guestVote" data-guest-is-owner="false">
                                 <td>
                                     <p class="text-body fw-bold mb-0">Petr Petrov</p>
                                     <p class="text-primary text-opacity-75 mb-0">petrov.petr@gmail.com</p>
                                 </td>
                                 <td>
-                                    <span class="text-secondary" data-type="guestVoteComment">I don't understand anything</span>
+                                    <span class="text-secondary" data-type="guestVoteComment" data-guest-id="100001">I don't understand anything</span>
                                 </td>
                                 <td class="text-end">
-                                    <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond" data-type="guestVoteValueIcon"></i>
+                                    <i class="bi fs-2 text-primary text-opacity-75 bi-suit-diamond" data-type="guestVoteValueIcon" data-guest-id="100001"></i>
                                 </td>
                             </tr>
                             </tbody>
@@ -102,29 +83,32 @@
                             <!--/*/
                             <tbody>
                             <tr data-type="guestVote"
-                                th:each="roomGuest : ${#lists.sort(roomGuests, roomGuestsComparatorVotePeriod)}"
-                                th:attr="data-is-owner=${roomGuest.isOwner}">
+                                th:each="guestVote : ${#lists.sort(guestVotes, guestVotesComparatorVotePeriod)}"
+                                th:attr="data-guest-is-owner=${false}">
 
                                 <td>
                                     <p class="text-body fw-bold mb-0"
-                                       th:text="*{roomGuest.name}">Ivan Kaliuzhnyi</p>
+                                       th:text="*{guestVote.guest.name}">Ivan Kaliuzhnyi</p>
                                     <p class="text-primary text-opacity-75 mb-0"
-                                       th:text="*{roomGuest.email}">kaliuzhnyi.ivan@gmail.com</p>
+                                       th:text="*{guestVote.user?.email}">kaliuzhnyi.ivan@gmail.com</p>
                                 </td>
                                 <td>
                                     <span class="text-secondary"
                                           data-type="guestVoteComment"
-                                          th:text="*{roomGuest.voteComment}">My super comment. This is an easy task. I'll do it.</span>
+                                          th:attr="data-guest-id=${guestVote.guest.id}"
+                                          th:text="*{guestVote.vote?.comment}">My super comment. This is an easy task. I'll do it.</span>
                                 </td>
                                 <td class="text-end"
                                     th:with="voteIcons = ${T(java.util.List).of('bi-suit-diamond','bi-suit-heart','bi-suit-spade','bi-suit-club')}">
                                     <i class="bi fs-2 text-primary text-opacity-75"
                                        data-type="guestVoteValueIcon"
-                                       th:if="${roomGuest.vote ne null}"
+                                       th:attr="data-guest-id=${guestVote.guest.id}"
+                                       th:if="${guestVote.vote ne null}"
                                        th:classappend="|${voteIcons.get(T(java.util.concurrent.ThreadLocalRandom).current().nextInt(voteIcons.size()))}-fill|"></i>
                                     <i class="bi fs-2 text-primary text-opacity-75"
                                        data-type="guestVoteValueIcon"
-                                       th:if="${roomGuest.vote eq null}"
+                                       th:attr="data-guest-id=${guestVote.guest.id}"
+                                       th:if="${guestVote.vote eq null}"
                                        th:classappend="${voteIcons.get(T(java.util.concurrent.ThreadLocalRandom).current().nextInt(voteIcons.size()))}"></i>
                                 </td>
                             </tr>
@@ -149,7 +133,7 @@
                                             <table class="table table-borderless table-hover align-middle">
                                                 <!--/* PROTOTYPE-->
                                                 <tbody>
-                                                <tr data-type="guestVote" data-is-owner="true">
+                                                <tr data-type="guestVote" data-guest-is-owner="true">
                                                     <td>
                                                         <p class="text-body fw-bold mb-0">Ivan Kaliuzhnyi</p>
                                                         <p class="text-primary text-opacity-75 mb-0">kaliuzhnyi.ivan@gmail.com</p>
@@ -161,16 +145,16 @@
                                                         <span class="fw-bold fs-5 opacity-50 text-primary">5</span>
                                                     </td>
                                                 </tr>
-                                                <tr data-type="guestVote" data-is-owner="false">
+                                                <tr data-type="guestVote" data-guest-is-owner="false">
                                                     <td>
                                                         <p class="text-body fw-bold mb-0">Petr Petrov</p>
                                                         <p class="text-primary text-opacity-75 mb-0">petrov.petr@gmail.com</p>
                                                     </td>
                                                     <td>
-                                                        <span class="text-secondary" data-type="guestVoteComment">I don't understand anything</span>
+                                                        <span class="text-secondary" data-type="guestVoteComment" data-guest-id="100001">I don't understand anything</span>
                                                     </td>
                                                     <td class="text-center">
-                                                        <span class="fw-bold fs-5 opacity-50 text-primary">8</span>
+                                                        <span class="fw-bold fs-5 opacity-50 text-primary" data-type="guestVoteValue" data-guest-id="100001">8</span>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -179,37 +163,38 @@
                                                 <!--/*/
                                                 <tbody>
                                                 <tr data-type="guestVote"
-                                                    th:each="roomGuest : ${#lists.sort(roomGuests, roomGuestsComparatorVote)}"
-                                                    th:attr="data-is-owner=${roomGuest.isOwner}">
+                                                    th:each="guestVote : ${#lists.sort(guestVotes, guestVotesComparatorVote)}"
+                                                    th:attr="data-guest-is-owner=${false}">
                                                     <td>
                                                         <p class="text-body fw-bold mb-0"
-                                                           th:text="*{roomGuest.name}">Ivan Kaliuzhnyi</p>
+                                                           th:text="*{guestVote.guest.name}">Ivan Kaliuzhnyi</p>
                                                         <p class="text-primary text-opacity-75 mb-0"
-                                                           th:text="*{roomGuest.email}">kaliuzhnyi.ivan@gmail.com</p>
+                                                           th:text="*{guestVote.user?.email}">kaliuzhnyi.ivan@gmail.com</p>
                                                     </td>
                                                     <td>
                                                     <span class="text-secondary"
                                                           data-type="guestVoteComment"
-                                                          th:text="*{roomGuest.voteComment}">My super comment. This is an easy task. I'll do it.</span>
+                                                          th:attr="data-guest-id=${guestVote.guest.id}"
+                                                          th:text="*{guestVote.vote?.comment}">My super comment. This is an easy task. I'll do it.</span>
                                                     </td>
                                                     <td class="text-center">
-                                                    <span class="fw-bold fs-5 opacity-50"
-                                                          data-type="guestVoteValue"
-                                                          th:if="*{roomGuest.vote}"
-                                                          th:text="*{roomGuest.vote.textRepresentation()}"
-                                                          th:classappend="|
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN ? 'text-danger' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_0 ? 'text-warning' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_1 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_2 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_3 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_5 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_8 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_13 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_20 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_40 ? 'text-primary' : ''}
-                                                                ${roomGuest.vote == T(com.simplescrumpoker.model.VoteCard).VALUE_100 ? 'text-warning' : ''}
-                                                          |">5</span>
+                                                        <span class="fw-bold fs-5 opacity-50"
+                                                              data-type="guestVoteValue"
+                                                              th:attr="data-guest-id=${guestVote.guest.id}"
+                                                              th:text="*{guestVote.vote?.representation}"
+                                                              th:classappend="|
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN ? 'text-danger' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_0 ? 'text-warning' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_1 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_2 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_3 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_5 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_8 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_13 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_20 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_40 ? 'text-primary' : ''}
+                                                                    ${guestVote.vote?.value == T(com.simplescrumpoker.model.VoteCard).VALUE_100 ? 'text-warning' : ''}
+                                                              |"></span>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -252,8 +237,8 @@
                                     name="value"
                                     class="btn btn-lg col border border-2 opacity-50 fw-bold mx-2 my-3"
                                     th:value="${voteCard}"
-                                    th:autofocus="${voteCard == vote.value}"
-                                    th:text="${voteCard.textRepresentation()}"
+                                    th:autofocus="${voteCard == currentGuestVote?.vote?.value}"
+                                    th:text="${voteCard.text}"
                                     th:classappend="|
                                         ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_UNKNOWN ? 'btn-outline-danger border-danger' : ''}
                                         ${voteCard == T(com.simplescrumpoker.model.VoteCard).VALUE_0 ? 'btn-outline-warning border-warning' : ''}
@@ -294,34 +279,143 @@
     </div>
 </main>
 <footer th:replace="~{assets/html/base::footer}"></footer>
+<script th:if="${isOwner}" th:inline="javascript">
+    $(function (){
+
+        const roomId = /*[[${room.id}]]*/ 100001;
+
+        $(":button#commandVotesRemove").click(function (){
+            $.ajax(`/api/rooms/${roomId}/votes`, {
+                method: "delete",
+                success: function (data, textStatus, xhr) {
+                    $("span[data-type='guestVoteValue']").empty();
+                    $("span[data-type='guestVoteComment']").empty();
+
+                    $("i[data-type='guestVoteValueIcon'].bi-suit-diamond-fill").removeClass("bi-suit-diamond-fill").addClass("bi-suit-diamond");
+                    $("i[data-type='guestVoteValueIcon'].bi-suit-heart-fill").removeClass("bi-suit-heart-fill").addClass("bi-suit-heart");
+                    $("i[data-type='guestVoteValueIcon'].bi-suit-spade-fill").removeClass("bi-suit-spade-fill").addClass("bi-suit-spade");
+                    $("i[data-type='guestVoteValueIcon'].bi-suit-club-fill").removeClass("bi-suit-club-fill").addClass("bi-suit-club");
+                }
+            });
+        });
+
+        $(":button#commandGuestsRemove").click(function (){
+            $.ajax(`/api/rooms/${roomId}/guests`, {
+                method: "delete",
+                success: function (data, textStatus, xhr) {
+                    $("tr[data-type='guestVote'][data-guest-is-owner='false']").empty();
+                }
+            });
+        });
+
+    });
+</script>
 <script th:inline="javascript">
 
-    const roomId = /*[[${room.id}]]*/ 100001;
+    function setVoteGuestValue(guestId, voteRepresentation) {
 
-    $(":button#commandVotesRemove").click(function (){
-        $.ajax(`/api/rooms/${roomId}/votes`, {
-            method: "delete",
-            success: function (data, textStatus, xhr) {
-                $("span[data-type='guestVoteValue']").empty();
-                $("span[data-type='guestVoteComment']").empty();
+        $(`span[data-type='guestVoteValue'][data-guest-id='${guestId}']`)
+            .text(function () {
+                return (voteRepresentation) ? voteRepresentation : "";
+            })
+            .removeClass(["text-primary", "text-danger", "text-warning", "text-secondary"])
+            .addClass(function () {
+                switch(voteRepresentation) {
+                    case "?":
+                        return "text-danger";
+                    case "0":
+                    case "100":
+                        return "text-warning";
+                    case "1":
+                    case "2":
+                    case "3":
+                    case "5":
+                    case "8":
+                    case "13":
+                    case "20":
+                    case "40":
+                        return "text-primary";
+                    default:
+                        return "text-secondary";
+                }
+            });
+    }
 
-                $("i[data-type='guestVoteValueIcon'].bi-suit-diamond-fill").removeClass("bi-suit-diamond-fill").addClass("bi-suit-diamond");
-                $("i[data-type='guestVoteValueIcon'].bi-suit-heart-fill").removeClass("bi-suit-heart-fill").addClass("bi-suit-heart");
-                $("i[data-type='guestVoteValueIcon'].bi-suit-spade-fill").removeClass("bi-suit-spade-fill").addClass("bi-suit-spade");
-                $("i[data-type='guestVoteValueIcon'].bi-suit-club-fill").removeClass("bi-suit-club-fill").addClass("bi-suit-club");
+    function setVoteGuestValueIcon(guestId, vote) {
+
+        $(`i[data-type='guestVoteValueIcon'][data-guest-id='${guestId}']`).each(function () {
+
+            let clsDiamond = "bi-suit-diamond";
+            let clsHeart = "bi-suit-heart";
+            let clsSpade = "bi-suit-spade";
+            let clsClub = "bi-suit-club";
+
+            if (vote) {
+                if ($(this).hasClass(clsDiamond)) {
+                    $(this).removeClass(clsDiamond).addClass(`${clsDiamond}-fill`);
+                    return;
+                }
+                if ($(this).hasClass(clsHeart)) {
+                    $(this).removeClass(clsHeart).addClass(`${clsHeart}-fill`);
+                    return;
+                }
+                if ($(this).hasClass(clsSpade)) {
+                    $(this).removeClass(clsSpade).addClass(`${clsSpade}-fill`);
+                    return;
+                }
+                if ($(this).hasClass(clsClub)) {
+                    $(this).removeClass(clsClub).addClass(`${clsClub}-fill`);
+                    return;
+                }
+                return;
             }
-        });
-    });
 
-    $(":button#commandGuestsRemove").click(function (){
-        $.ajax(`/api/rooms/${roomId}/guests`, {
-            method: "delete",
-            success: function (data, textStatus, xhr) {
-                $("tr[data-type='guestVote'][data-is-owner='false']").empty();
+            if (!vote) {
+                if ($(this).hasClass(`${clsDiamond}-fill`)) {
+                    $(this).removeClass(`${clsDiamond}-fill`).addClass(clsDiamond);
+                    return;
+                }
+                if ($(this).hasClass(`${clsHeart}-fill`)) {
+                    $(this).removeClass(`${clsHeart}-fill`).addClass(clsHeart);
+                    return;
+                }
+                if ($(this).hasClass(`${clsSpade}-fill`)) {
+                    $(this).removeClass(`${clsSpade}-fill`).addClass(clsSpade);
+                    return;
+                }
+                if ($(this).hasClass(`${clsClub}-fill`)) {
+                    $(this).removeClass(`${clsClub}-fill`).addClass(clsClub);
+                    return;
+                }
+                return;
             }
-        });
-    });
 
+        });
+
+    }
+
+    $(function (){
+
+        const roomId = /*[[${room.id}]]*/ 100001;
+
+        setInterval(function (){
+            $.ajax(`/api/rooms/${roomId}/votes`, {
+                method: "get",
+                success: function (data, textStatus, xhr) {
+                    data.forEach(function (item) {
+                        if (item === null) return;
+
+                        if (item.guest !== null) {
+                            setVoteGuestValue(item.guest.id, item.vote?.representation);
+                            setVoteGuestValueIcon(item.guest.id, item.vote?.representation);
+                        }
+
+                    });
+                }
+            });
+        }, 5000);
+
+    });
 </script>
 </body>
 </html>

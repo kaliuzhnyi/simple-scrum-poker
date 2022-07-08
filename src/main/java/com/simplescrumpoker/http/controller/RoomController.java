@@ -1,15 +1,17 @@
 package com.simplescrumpoker.http.controller;
 
-import com.simplescrumpoker.http.alert.Alert;
 import com.simplescrumpoker.dto.guest.GuestReadDto;
-import com.simplescrumpoker.dto.guest.RoomGuestProjection;
+import com.simplescrumpoker.dto.guest.GuestVoteView;
 import com.simplescrumpoker.dto.room.RoomCreateDto;
 import com.simplescrumpoker.dto.room.RoomEnterDto;
 import com.simplescrumpoker.dto.room.RoomUpdateDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.dto.vote.VoteCreateDto;
 import com.simplescrumpoker.dto.vote.VoteReadDto;
+import com.simplescrumpoker.exception.GuestNotFoundException;
+import com.simplescrumpoker.exception.GuestNotPresentInRoomException;
 import com.simplescrumpoker.exception.RoomNotFoundException;
+import com.simplescrumpoker.http.alert.Alert;
 import com.simplescrumpoker.model.VoteCard;
 import com.simplescrumpoker.service.GuestService;
 import com.simplescrumpoker.service.RoomService;
@@ -58,32 +60,44 @@ public class RoomController {
                                HttpSession httpSession) {
         var roomReadDto = roomService.read(roomId)
                 .orElseThrow(() -> {
-                    throw new RoomNotFoundException();
+                    throw new RoomNotFoundException("Room not found by id:%s".formatted(roomId));
+                });
+
+        var currentGuest = Optional.ofNullable(guestReadDto)
+                .or(() -> Optional.ofNullable(userSecurityDetailsDto)
+                        .flatMap(guestService::findByUser)
+                        .map(v -> {
+                            model.addAttribute("guest", v);
+                            return v;
+                        })
+                )
+                .orElseThrow(() -> {
+                    throw new GuestNotFoundException();
+                });
+
+        var isPresentInRoom = Optional.ofNullable(currentGuest)
+                .map(v -> guestService.presentInRoom(currentGuest, roomId))
+                .filter(v -> v)
+                .orElseThrow(() -> {
+                    throw new GuestNotPresentInRoomException();
                 });
 
         var isOwner = Optional.ofNullable(userSecurityDetailsDto)
                 .filter(v -> Objects.equals(v.getId(), roomReadDto.getOwner().getId()))
                 .isPresent();
-        if (!isOwner) {
-            var presentInRoom = Optional.ofNullable(guestReadDto)
-                    .map(v -> guestService.presentInRoom(guestReadDto, roomId))
-                    .orElseGet(() -> Optional.ofNullable(userSecurityDetailsDto)
-                            .flatMap(guestService::findByUser)
-                            .map(dto -> {
-                                model.addAttribute("guest", dto);
-                                return guestService.presentInRoom(dto, roomId);
-                            })
-                            .orElse(false));
-            if (!presentInRoom) {
-                return "redirect:/rooms/enter/%s".formatted(roomId);
-            }
-        }
 
-        var roomGuests = roomService.readGuests(roomId);
+        var guestVotes = guestService.readAllGuestVotesFromRoom(roomReadDto);
+
+        var currentGuestVote = guestVotes.stream()
+                .filter(v -> v.getGuest().getId().equals(currentGuest.getId()))
+                .findFirst()
+                .orElse(null);
+
         model.addAttribute("room", roomReadDto);
-        model.addAttribute("roomGuests", roomGuests);
-        model.addAttribute("roomGuestsComparatorVote", RoomGuestProjection.comparatorVote());
-        model.addAttribute("roomGuestsComparatorVotePeriod", RoomGuestProjection.comparatorVotePeriod());
+        model.addAttribute("currentGuestVote", currentGuestVote);
+        model.addAttribute("guestVotes", guestVotes);
+        model.addAttribute("guestVotesComparatorVote", GuestVoteView.comparatorVote());
+        model.addAttribute("guestVotesComparatorVotePeriod", GuestVoteView.comparatorVotePeriod());
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("voteCards", List.of(VoteCard.values()));
 
@@ -244,7 +258,11 @@ public class RoomController {
         return "redirect:/rooms/%s".formatted(roomId);
     }
 
-    @ExceptionHandler(RoomNotFoundException.class)
+    @ExceptionHandler({
+            RoomNotFoundException.class,
+            GuestNotFoundException.class,
+            GuestNotPresentInRoomException.class
+    })
     public String handleException(RedirectAttributes redirectAttributes,
                                   @AuthenticationPrincipal UserSecurityDetailsDto userSecurityDetailsDto) {
         return Optional.ofNullable(userSecurityDetailsDto)

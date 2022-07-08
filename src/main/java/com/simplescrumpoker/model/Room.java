@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@EqualsAndHashCode(exclude = {"guestRooms", "votes"})
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -29,16 +29,19 @@ public class Room extends AuditableEntity implements MappableEntity {
     private String password;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GuestRoom> guestRooms = new ArrayList<>();
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Vote> votes = new ArrayList<>();

@@ -34,7 +34,6 @@ public class User extends AuditableEntity implements MappableEntity {
     private List<Room> rooms = new ArrayList<>();
 
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Guest guest;
 

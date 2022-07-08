@@ -1,6 +1,5 @@
 package com.simplescrumpoker.repository;
 
-import com.simplescrumpoker.dto.guest.RoomGuestProjection;
 import com.simplescrumpoker.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,32 +22,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                     "or r.password = cast(:password as varchar))")
     boolean passwordCorrect(@Param("roomId") Long roomId,
                             @Param("password") String password);
-
-    @Query(nativeQuery = true,
-            value = "select " +
-                    "g.id, " +
-                    "g.name, " +
-                    "u.email, " +
-                    "g.type, " +
-                    "v.value vote, " +
-                    "v.comment voteComment," +
-                    "v.last_modified_date votePeriod, " +
-                    "case when cast(r.owner_id as bigint) = cast(u.id as bigint) then true else false end isOwner " +
-                    "from guests_rooms gr " +
-                    "join guests g on g.id = gr.guest_id " +
-                    "left join guests_users gu on gu.guest_id = g.id " +
-                    "left join users u on u.id = gu.user_id " +
-                    "left join votes v on v.guest_id = g.id and v.room_id = gr.room_id " +
-                    "left join rooms r on r.owner_id = u.id and r.id = :roomId " +
-                    "where gr.room_id = :roomId and access_status = true")
-    List<RoomGuestProjection> guestsRoomGuestProjection(Long roomId);
-
-    default <T> List<T> readAllGuests(Long roomId, Class<T> cls) {
-        if (cls == RoomGuestProjection.class) {
-            return (List<T>) guestsRoomGuestProjection(roomId);
-        }
-        return new ArrayList<T>();
-    }
 
     @Modifying
     @Query(nativeQuery = true,
