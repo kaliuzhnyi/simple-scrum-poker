@@ -42,7 +42,7 @@
 
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 
 <!--HEADER-->
 <header class="mb-5 sticky-top bg-navbar" th:fragment="header">
@@ -103,7 +103,7 @@
 </header>
 
 <!--MAIN-->
-<main class="container my-5" style="height: 10000px">
+<main class="container my-5" style="height: 1000px">
     <div class="row justify-content-around">
         <div class="col-md-4">
             <h2 class="mb-4">Create instant room</h2>
@@ -156,7 +156,10 @@
 
 <!--FOOTER-->
 <footer class="container my-5" th:fragment="footer">
-    <!--    -->
+</footer>
+
+<footer class="container my-5" th:fragment="footer-index">
+    <span class="text-secondary opacity-50">powered by <a class="text-decoration-none" href="#">kaliuzhnyi</a></span>
 </footer>
 
 </body>
