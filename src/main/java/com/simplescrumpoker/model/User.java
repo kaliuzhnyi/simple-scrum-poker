@@ -28,14 +28,33 @@ public class User extends AuditableEntity implements MappableEntity {
     private String password;
 
     @ToString.Exclude
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    private Guest guest;
+
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Room> rooms = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    private Guest guest;
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Retro> retros = new ArrayList<>();
+
+
+    public void setGuest(Guest guest) {
+
+        if (Objects.nonNull(this.guest) && Objects.equals(this.guest.getUser(), this)) {
+            this.guest.getUser().setGuest(null);
+        }
+
+        this.guest = guest;
+        if (Objects.nonNull(guest) && !Objects.equals(guest.getUser(), this)) {
+            guest.setUser(this);
+        }
+    }
 
 
     public void addRoom(Room room) {
@@ -55,15 +74,19 @@ public class User extends AuditableEntity implements MappableEntity {
     }
 
 
-    public void setGuest(Guest guest) {
+    public void addRetro(Retro retro) {
+        retros.add(retro);
 
-        if (Objects.nonNull(this.guest) && Objects.equals(this.guest.getUser(), this)) {
-            this.guest.getUser().setGuest(null);
+        if (Objects.nonNull(retro) && !Objects.equals(retro.getOwner(), this)) {
+            retro.setOwner(this);
         }
+    }
 
-        this.guest = guest;
-        if (Objects.nonNull(guest) && !Objects.equals(guest.getUser(), this)) {
-            guest.setUser(this);
+    public void removeRetro(Retro retro) {
+        retros.remove(retro);
+
+        if (Objects.nonNull(retro) && Objects.equals(retro.getOwner(), this)) {
+            retro.setOwner(null);
         }
     }
 

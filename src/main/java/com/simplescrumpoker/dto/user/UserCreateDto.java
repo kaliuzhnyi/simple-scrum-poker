@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @FieldNameConstants
 @EqualFields(baseField = UserCreateDto.Fields.password,
         matchField = UserCreateDto.Fields.repeatPassword,
-        message = "{user.signup.repeatPassword.error.notRepeated}")
+        message = "{user.set.repeatPassword.error.notRepeated}")
 public class UserCreateDto extends UserDto {
 
     @NotBlank(message = "{user.signup.name.error.isBlank}")
@@ -28,11 +28,11 @@ public class UserCreateDto extends UserDto {
     @UserEmailNotExists(message = "{user.signup.email.error.exists}")
     String email;
 
-    @NotBlank(message = "{user.signup.password.error.isBlank}")
-    @Size(min = 6, max = 100, message = "{user.signup.password.error.wrongSize}")
+    @NotBlank(message = "{user.set.password.error.isBlank}")
+    @Size(min = 6, max = 100, message = "{user.set.password.error.wrongSize}")
     String password;
 
-    @NotBlank(message = "{user.signup.repeatPassword.error.isBlank}")
+    @NotBlank(message = "{user.set.repeatPassword.error.isBlank}")
     String repeatPassword;
 
 }

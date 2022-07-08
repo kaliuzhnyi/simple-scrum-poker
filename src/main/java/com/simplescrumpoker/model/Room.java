@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -30,7 +29,7 @@ public class Room extends AuditableEntity implements MappableEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 

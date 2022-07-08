@@ -2,7 +2,6 @@ package com.simplescrumpoker.service;
 
 import com.simplescrumpoker.dto.guest.GuestCreateDto;
 import com.simplescrumpoker.dto.guest.GuestReadDto;
-import com.simplescrumpoker.dto.guest.GuestVoteDto;
 import com.simplescrumpoker.dto.guest.GuestVoteView;
 import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
