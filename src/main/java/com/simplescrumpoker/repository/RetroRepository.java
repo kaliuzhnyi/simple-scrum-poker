@@ -18,7 +18,7 @@ public interface RetroRepository extends JpaRepository<Retro, Long> {
             value = "select r.* " +
                     "from guests_users gu " +
                     "join guests_retros gr on gu.guest_id = gr.guest_id " +
-                    "join rooms r on r.id = gr.retro_id " +
+                    "join retros r on r.id = gr.retro_id " +
                     "where gu.user_id = :userId")
     List<Retro> readAllEnteredByUserId(Long userId);
 
