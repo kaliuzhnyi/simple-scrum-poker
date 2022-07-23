@@ -1,13 +1,13 @@
 spring:
   datasource:
-    # local database
-    url: jdbc:postgresql://localhost:5432/simplescrum
-    username: postgres
-    password: postgres0126377
-#    # heroku database
-#    url: jdbc:postgresql://ec2-52-30-159-47.eu-west-1.compute.amazonaws.com:5432/d5f620496e1lr1
-#    username: uxfpjpmcepgcdo
-#    password: 362d67c87d194ba1c436f78b9e0495c09215f72cf9dae9e6f5672a64c2b09738
+#    # local database
+#    url: jdbc:postgresql://localhost:5432/simplescrum
+#    username: postgres
+#    password: postgres0126377
+    # heroku database
+    url: jdbc:postgresql://ec2-52-30-159-47.eu-west-1.compute.amazonaws.com:5432/d5f620496e1lr1
+    username: uxfpjpmcepgcdo
+    password: 362d67c87d194ba1c436f78b9e0495c09215f72cf9dae9e6f5672a64c2b09738
   jpa:
     hibernate:
       ddl-auto: validate
