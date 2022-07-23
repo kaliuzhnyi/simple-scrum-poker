@@ -30,10 +30,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/users/password/remind").permitAll()
                     .antMatchers("/users/password/set/**").permitAll()
+
+                    .antMatchers("/rooms/create").authenticated()
                     .antMatchers("/rooms/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/rooms/enter", "/rooms/enter/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/rooms/enter", "/rooms/enter/**").permitAll()
+
+                    .antMatchers("/retros/create").authenticated()
                     .antMatchers("/retros/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/retros/enter", "/retros/enter/**").permitAll()
+                    .antMatchers(HttpMethod.POST, "/retros/enter", "/retros/enter/**").permitAll()
+
                     .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     .anyRequest()
                     .authenticated()
