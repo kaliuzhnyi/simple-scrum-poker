@@ -20,7 +20,10 @@
 <body>
 <header th:replace="~{assets/html/base::header}"></header>
 <main class="container my-5">
+    <!--/*@thymesVar id="room" type="com.simplescrumpoker.dto.room.RoomCreateDto"*/-->
     <div class="row justify-content-around">
+
+        <!--/* FORM CREATE */-->
         <div class="col-md-6">
             <h2 class="mb-4">Create room</h2>
             <form name="createRoom" method="post"
@@ -47,8 +50,7 @@
                     </div>
                 </div>
                 <div class="form-floating mb-4">
-                    <input type="password" class="form-control" id="password" name="password"
-                           placeholder="Room password"
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Room password"
                            th:field="*{password}"
                            th:errorclass="is-invalid">
                     <label for="password">Room password</label>
@@ -59,6 +61,7 @@
                 </div>
                 <button class="btn btn-primary btn-lg mb-4" type="submit">Create a new room</button>
             </form>
+            <th:block th:insert="~{assets/html/alert::form}"></th:block>
         </div>
     </div>
 </main>

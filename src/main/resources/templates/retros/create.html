@@ -20,10 +20,13 @@
 <body>
 <header th:replace="~{assets/html/base::header}"></header>
 <main class="container my-5">
+    <!--/*@thymesVar id="retro" type="com.simplescrumpoker.dto.retro.RetroCreateDto"*/-->
     <div class="row justify-content-around">
+
+        <!--/* FORM CREATE */-->
         <div class="col-md-6">
             <h2 class="mb-4">Create retro</h2>
-            <form name="createRoom" method="post"
+            <form name="createRetro" method="post"
                   th:action="@{/retros/create}"
                   th:object="${retro}">
                 <div class="form-floating mb-4">
@@ -58,7 +61,7 @@
                 </div>
                 <button class="btn btn-primary btn-lg mb-4" type="submit">Create a new retro</button>
             </form>
-            <th:block th:insert="~{/assets/html/alert::form}"></th:block>
+            <th:block th:insert="~{assets/html/alert::form}"></th:block>
         </div>
     </div>
 </main>
