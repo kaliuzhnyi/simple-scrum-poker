@@ -1,6 +1,8 @@
 package com.simplescrumpoker.model;
 
 import com.simplescrumpoker.mapper.MappableEntity;
+import com.simplescrumpoker.model.guest.Guest;
+import com.simplescrumpoker.model.guest.GuestRoom;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

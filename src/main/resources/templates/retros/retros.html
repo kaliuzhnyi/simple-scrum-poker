@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Retros</title>
+
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    <!--*/-->
+
+    <th:block th:replace="~{assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{assets/html/base::header}"></header>
+<main class="container my-5">
+    <!--/*@thymesVar id="ownRetros" type="java.util.List<com.simplescrumpoker.dto.retro.RetroReadDto>"*/-->
+    <!--/*@thymesVar id="enteredRetros" type="java.util.List<com.simplescrumpoker.dto.retro.RetroReadDto>"*/-->
+    <div class="row justify-content-around">
+
+        <div class="col">
+
+            <!-- OWN RETROS -->
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-10">
+                    <h2>My own retros</h2>
+                </div>
+                <div class="col-2">
+                    <a class="link-primary text-decoration-none float-end" href="#" th:href="@{/retros/create}">Create retro</a>
+                </div>
+            </div>
+            <div class="row" th:if="${#lists.isEmpty(ownRetros)}">
+                <div class="mt-n1">
+                    <div class="alert alert-warning opacity-50" role="alert">You don't have your own retros yet...
+                        <a class="alert-link text-decoration-none" href="#" th:href="@{/retros/create}">Create my own retro!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" th:if="${not #lists.isEmpty(ownRetros)}">
+                <div class="my-1 py-1" th:each="retro : ${ownRetros}">
+                    <span class="d-block">
+                        <strong class="text-muted" th:text="${retro.title}"></strong>
+                        <a class="text-decoration-none fw-bold"
+                           th:href="@{/retros/{retroId}(retroId=${retro.id})}"
+                           th:text="${retro.id}"></a>
+                    </span>
+                    <span class="d-block text-muted text-truncate" th:text="${retro.description}"></span>
+                    <hr class="text-opacity-50 text-secondary">
+                </div>
+            </div>
+
+            <!-- ENTERED RETROS -->
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-10">
+                    <h2>My entered retros</h2>
+                </div>
+                <div class="col-2">
+                    <a class="link-primary text-decoration-none float-end" href="#" th:href="@{/retros/enter}">Enter the retro</a>
+                </div>
+            </div>
+            <div class="row" th:if="${#lists.isEmpty(enteredRetros)}">
+                <div class="mt-n1">
+                    <div class="alert alert-warning opacity-50" role="alert">You don't enter to any retros yet...
+                        <a class="alert-link text-decoration-none" href="#" th:href="@{/retros/enter}">Enter the retro!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" th:if="${not #lists.isEmpty(enteredRetros)}">
+                <div class="my-1 py-1" th:each="retro : ${enteredRetros}">
+                    <span class="d-block">
+                        <strong class="text-muted" th:text="${retro.title}"></strong>
+                        <a class="text-decoration-none fw-bold"
+                           th:href="@{/retros/{retroId}(retroId=${retro.id})}"
+                           th:text="${retro.id}"></a>
+                    </span>
+                    <span class="d-block text-muted text-truncate" th:text="${retro.description}"></span>
+                    <hr class="text-opacity-50 text-secondary">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+<footer th:replace="~{assets/html/base::footer-base}"></footer>
+</body>
+</html>

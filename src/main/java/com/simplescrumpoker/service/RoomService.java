@@ -1,17 +1,16 @@
 package com.simplescrumpoker.service;
 
-import com.simplescrumpoker.dto.guest.GuestReadDto;
 import com.simplescrumpoker.dto.room.RoomCreateDto;
 import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.room.RoomUpdateDto;
-import com.simplescrumpoker.dto.vote.VoteReadDto;
+import com.simplescrumpoker.exception.RetroNotFoundException;
+import com.simplescrumpoker.exception.RoomNotFoundException;
 import com.simplescrumpoker.exception.UserNotFoundException;
-import com.simplescrumpoker.mapper.guest.GuestReadMapper;
 import com.simplescrumpoker.mapper.room.RoomCreateMapper;
 import com.simplescrumpoker.mapper.room.RoomReadMapper;
 import com.simplescrumpoker.mapper.room.RoomUpdateMapper;
 import com.simplescrumpoker.mapper.vote.VoteReadMapper;
-import com.simplescrumpoker.repository.GuestRepository;
+import com.simplescrumpoker.model.Room;
 import com.simplescrumpoker.repository.RoomRepository;
 import com.simplescrumpoker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +26,11 @@ import java.util.Optional;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
-    private final GuestRepository guestRepository;
+
     private final RoomCreateMapper roomCreateMapper;
     private final RoomUpdateMapper roomUpdateMapper;
     private final RoomReadMapper roomReadMapper;
-    private final GuestReadMapper guestReadMapper;
+
     private final VoteReadMapper voteReadMapper;
 
     @Transactional
@@ -52,6 +51,29 @@ public class RoomService {
                 .orElseThrow();
     }
 
+
+    protected Optional<Room> find(Long roomId) {
+        return roomRepository.findById(roomId);
+    }
+
+    protected Room get(Long roomId) throws RoomNotFoundException {
+        return find(roomId).orElseThrow(() -> {
+            throw new RetroNotFoundException(roomId);
+        });
+    }
+
+
+    public Optional<RoomReadDto> read(Long roomId) {
+        return find(roomId).map(roomReadMapper::mapToDto);
+    }
+
+    public RoomReadDto readOrThrow(Long roomId) {
+        return read(roomId).orElseThrow(() -> {
+            throw new RoomNotFoundException(roomId);
+        });
+    }
+
+
     public List<RoomReadDto> readAll(Long ownerId) {
         return roomRepository.readAllByOwnerId(ownerId).stream()
                 .map(roomReadMapper::mapToDto)
@@ -62,27 +84,6 @@ public class RoomService {
         return roomRepository.readAllEnteredByUserId(userId).stream()
                 .map(roomReadMapper::mapToDto)
                 .toList();
-    }
-
-    public Optional<RoomReadDto> read(Long roomId) {
-        return roomRepository.findById(roomId)
-                .map(roomReadMapper::mapToDto);
-    }
-
-    public Optional<RoomReadDto> read(Long roomId, List<GuestReadDto> guests, List<VoteReadDto> votes) {
-        return roomRepository.findById(roomId)
-                .map(entity -> {
-                    Optional.ofNullable(votes)
-                            .ifPresent(list -> entity.getVotes().stream()
-                                    .map(voteReadMapper::mapToDto)
-                                    .forEach(list::add));
-                    return roomReadMapper.mapToDto(entity);
-                });
-    }
-
-    @Transactional
-    public void removeGuests(Long roomId) {
-        roomRepository.setAllGuestsStatusExceptOwner(roomId, false);
     }
 
     @Transactional

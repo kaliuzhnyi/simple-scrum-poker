@@ -51,8 +51,7 @@ public class RoomRestController {
             }
         }
 
-        List<GuestVoteView> guestVoteViews = guestService.readAllGuestVotesFromRoom(roomReadDto);
-        return guestVoteViews;
+        return guestService.readAllGuestVotesFromRoom(roomReadDto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -90,7 +89,7 @@ public class RoomRestController {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 });
 
-        roomService.removeGuests(roomId);
+        guestService.blockAllInRoomExceptOwner(roomReadDto);
     }
 
 }

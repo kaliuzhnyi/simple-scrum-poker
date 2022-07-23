@@ -84,7 +84,7 @@
                             <tbody>
                             <tr data-type="guestVote"
                                 th:each="guestVote : ${#lists.sort(guestVotes, guestVotesComparatorVotePeriod)}"
-                                th:attr="data-guest-is-owner=${false}">
+                                th:attr="data-guest-is-owner=${guestVote.isRoomOwner}">
 
                                 <td>
                                     <p class="text-body fw-bold mb-0"
@@ -164,7 +164,7 @@
                                                 <tbody>
                                                 <tr data-type="guestVote"
                                                     th:each="guestVote : ${#lists.sort(guestVotes, guestVotesComparatorVote)}"
-                                                    th:attr="data-guest-is-owner=${false}">
+                                                    th:attr="data-guest-is-owner=${guestVote.isRoomOwner}">
                                                     <td>
                                                         <p class="text-body fw-bold mb-0"
                                                            th:text="*{guestVote.guest.name}">Ivan Kaliuzhnyi</p>

@@ -1,6 +1,6 @@
 package com.simplescrumpoker.dto.guest;
 
-import com.simplescrumpoker.model.GuestType;
+import com.simplescrumpoker.model.guest.GuestType;
 import com.simplescrumpoker.model.VoteCard;
 import org.springframework.beans.factory.annotation.Value;
 

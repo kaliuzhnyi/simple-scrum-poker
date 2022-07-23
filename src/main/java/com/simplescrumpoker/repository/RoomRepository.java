@@ -14,6 +14,14 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> readAllByOwnerId(Long ownerId);
 
     @Query(nativeQuery = true,
+            value = "select r.* " +
+                    "from guests_users gu " +
+                    "join guests_rooms gr on gu.guest_id = gr.guest_id " +
+                    "join rooms r on r.id = gr.room_id " +
+                    "where gu.user_id = :userId")
+    List<Room> readAllEnteredByUserId(Long userId);
+
+    @Query(nativeQuery = true,
             value = "select " +
                     "case when count(r.*) > 0 then true else false end " +
                     "from rooms r " +
@@ -22,26 +30,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                     "or r.password = cast(:password as varchar))")
     boolean passwordCorrect(@Param("roomId") Long roomId,
                             @Param("password") String password);
-
-    @Modifying
-    @Query(nativeQuery = true,
-            value = "update guests_rooms gr " +
-                    "set access_status = :status, access_date = now() " +
-                    "where room_id = :roomId " +
-                    "and access_status = true " +
-                    "and guest_id != " +
-                    "(select gu.guest_id " +
-                    "from rooms r " +
-                    "join guests_users gu on r.owner_id = gu.user_id " +
-                    "where r.id = gr.room_id)")
-    void setAllGuestsStatusExceptOwner(Long roomId, boolean status);
-
-    @Query(nativeQuery = true,
-            value = "select r.* " +
-                    "from guests_users gu " +
-                    "join guests_rooms gr on gu.guest_id = gr.guest_id " +
-                    "join rooms r on r.id = gr.room_id " +
-                    "where gu.user_id = :userId")
-    List<Room> readAllEnteredByUserId(Long userId);
 
 }

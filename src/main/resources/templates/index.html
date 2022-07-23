@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>simple.scrum.poker</title>
-
+    <title>simple.scrum</title>
     <!--/*-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-          crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-            crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="/static/css/bootstrap-icons.css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="/static/js/bootstrap.bundle.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
     <!--*/-->
-
     <th:block th:replace="~{assets/html/base::head}"></th:block>
 </head>
 <body class="d-flex flex-column h-100 mt-n1">
 <header th:replace="~{assets/html/base::header}"></header>
 <main class="container my-5">
     <div class="row justify-content-around">
-
         <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active" data-bs-interval="5000">
-                    <img class="d-block mx-auto h-auto" src="../static/image/team_ua_640.svg" th:src="@{/image/team_ua_640.svg}">
+                    <img alt="team" class="d-block mx-auto h-auto" src="../static/image/team_ua_640.svg" th:src="@{/image/team_ua_640.svg}">
                     <div class="d-none d-md-block text-center mt-5">
                         <h2>Discuss and evaluate tasks with your team - easy and simple!</h2>
                         <span>Don't delay! <a class="link-primary" href="#" th:href="@{/signup}">Registration</a></span>
                     </div>
                 </div>
                 <div class="carousel-item" data-bs-interval="5000">
-                    <img class="d-block mx-auto h-auto" src="../static/image/team_join_ua_640.svg" th:src="@{/image/team_join_ua_640.svg}">
+                    <img alt="join to team" class="d-block mx-auto h-auto" src="../static/image/team_join_ua_640.svg" th:src="@{/image/team_join_ua_640.svg}">
                     <div class="d-none d-md-block text-center mt-5">
                         <h2>Join your team in the voting room!</h2>
                         <span>Your team is waiting for you! <a class="link-primary" href="#" th:href="@{/rooms/enter}">Enter the voting room</a></span>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="5000">
+                    <img alt="retro" class="d-block mx-auto h-auto" src="../static/image/team_retro_ua_640.svg" th:src="@{/image/team_retro_ua_640.svg}">
+                    <div class="d-none d-md-block text-center mt-5">
+                        <h2>Join your team in the retro room!</h2>
+                        <span>Your team is waiting for you! <a class="link-primary" href="#" th:href="@{/retros/enter}">Enter the retro room</a></span>
                     </div>
                 </div>
             </div>

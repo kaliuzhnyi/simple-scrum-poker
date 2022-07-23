@@ -1,7 +1,7 @@
 package com.simplescrumpoker.mapper.guest;
 
 import com.simplescrumpoker.dto.guest.GuestCreateDto;
-import com.simplescrumpoker.model.Guest;
+import com.simplescrumpoker.model.guest.Guest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

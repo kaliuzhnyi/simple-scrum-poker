@@ -24,9 +24,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class VoteService {
+
+    // Block of repositories
     private final VoteRepository voteRepository;
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
+
+    // Block of mappers
     private final VoteCreateMapper voteCreateMapper;
     private final VoteReadMapper voteReadMapper;
 

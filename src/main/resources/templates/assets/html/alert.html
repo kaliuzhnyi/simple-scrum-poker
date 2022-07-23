@@ -23,22 +23,22 @@
 
     <div class="alert alert-primary" role="alert"
          th:if="${alert} and ${alert.isInfo()}"
-         th:text="#{${alert.getMessage()}}">Alert. Some info message.
+         th:text="${alert.messageType == T(com.simplescrumpoker.http.alert.AlertMessageType).PROPERTY ? #messages.msg(alert.message) : alert.message}">Alert. Some info message.
     </div>
 
     <div class="alert alert-danger" role="alert"
          th:if="${alert} and ${alert.isError()}"
-         th:text="#{${alert.getMessage()}}">Alert. Some error message.
+         th:text="${alert.messageType == T(com.simplescrumpoker.http.alert.AlertMessageType).PROPERTY ? #messages.msg(alert.message) : alert.message}">Alert. Some error message.
     </div>
 
     <div class="alert alert-warning" role="alert"
          th:if="${alert} and ${alert.isWarn()}"
-         th:text="#{${alert.getMessage()}}">Alert. Some warn message.
+         th:text="${alert.messageType == T(com.simplescrumpoker.http.alert.AlertMessageType).PROPERTY ? #messages.msg(alert.message) : alert.message}">Alert. Some warn message.
     </div>
 
     <div class="alert alert-success" role="alert"
          th:if="${alert} and ${alert.isSuccess()}"
-         th:text="#{${alert.getMessage()}}">Alert. Some success message.
+         th:text="${alert.messageType == T(com.simplescrumpoker.http.alert.AlertMessageType).PROPERTY ? #messages.msg(alert.message) : alert.message}">Alert. Some success message.
     </div>
 
 </th:block>

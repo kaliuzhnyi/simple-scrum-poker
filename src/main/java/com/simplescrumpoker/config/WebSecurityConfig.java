@@ -1,6 +1,6 @@
 package com.simplescrumpoker.config;
 
-import com.simplescrumpoker.http.controller.SignInController;
+import com.simplescrumpoker.http.controller.user.SignInController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +24,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                     .disable()
                 .authorizeHttpRequests()
-                    .antMatchers("/**").permitAll()
-                    .antMatchers("/css/**", "/js/**", "/image/**").permitAll()
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/css/**", "/js/**", "/image/**", "/fonts/**").permitAll()
                     .antMatchers("/signin").permitAll()
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/users/password/remind").permitAll()
@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/rooms/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/rooms/enter", "/rooms/enter/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/rooms/enter", "/rooms/enter/**").permitAll()
+                    .antMatchers("/retros/**").permitAll()
                     .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     .anyRequest()
                     .authenticated()

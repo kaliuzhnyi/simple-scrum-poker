@@ -26,4 +26,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findByEmail(username);
     }
 
+    @Query(nativeQuery = true,
+            value = "select " +
+                    "count(r.id) > 0 " +
+                    "from retros r " +
+                    "where r.id = :retroId and r.owner_id = :userId")
+    boolean userOwnRetro(Long userId, Long retroId);
+
+    @Query(nativeQuery = true,
+            value = "select " +
+                    "count(r.id) > 0 " +
+                    "from rooms r " +
+                    "where r.id = :roomId and r.owner_id = :userId")
+    boolean userOwnRoom(Long userId, Long roomId);
 }

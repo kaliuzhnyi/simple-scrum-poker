@@ -1,6 +1,8 @@
 package com.simplescrumpoker.model;
 
 import com.simplescrumpoker.mapper.MappableEntity;
+import com.simplescrumpoker.model.guest.Guest;
+import com.simplescrumpoker.model.retro.Retro;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -28,6 +30,7 @@ public class User extends AuditableEntity implements MappableEntity {
     private String password;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Guest guest;
 

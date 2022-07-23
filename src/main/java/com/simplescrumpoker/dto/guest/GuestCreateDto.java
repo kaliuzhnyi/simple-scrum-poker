@@ -1,6 +1,6 @@
 package com.simplescrumpoker.dto.guest;
 
-import com.simplescrumpoker.model.GuestType;
+import com.simplescrumpoker.model.guest.GuestType;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,4 +11,5 @@ public class GuestCreateDto extends GuestDto {
     GuestType type;
     Long userId;
     Long roomId;
+    Long retroId;
 }

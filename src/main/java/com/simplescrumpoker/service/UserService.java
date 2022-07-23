@@ -1,16 +1,19 @@
 package com.simplescrumpoker.service;
 
+import com.simplescrumpoker.dto.retro.RetroReadDto;
+import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.user.UserCreateDto;
 import com.simplescrumpoker.dto.user.UserReadDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.dto.user.UserUpdateProfileDto;
-import com.simplescrumpoker.exception.UserExistsException;
+import com.simplescrumpoker.exception.*;
 import com.simplescrumpoker.mapper.user.UserCreateMapper;
 import com.simplescrumpoker.mapper.user.UserReadMapper;
 import com.simplescrumpoker.mapper.user.UserSecurityDetailsMapper;
 import com.simplescrumpoker.mapper.user.UserUpdateProfileMapper;
-import com.simplescrumpoker.model.Guest;
-import com.simplescrumpoker.model.GuestType;
+import com.simplescrumpoker.model.User;
+import com.simplescrumpoker.model.guest.Guest;
+import com.simplescrumpoker.model.guest.GuestType;
 import com.simplescrumpoker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,18 +23,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
+
+    // Block of repositories
     private final UserRepository userRepository;
+
+    // Block of mappers
     private final UserCreateMapper userCreateMapper;
     private final UserReadMapper userReadMapper;
     private final UserUpdateProfileMapper userUpdateProfileMapper;
-
     private final UserSecurityDetailsMapper userSecurityDetailsMapper;
+
 
     @Transactional
     public UserReadDto create(UserCreateDto objectDto) {
@@ -48,15 +56,21 @@ public class UserService implements UserDetailsService {
                 .map(userReadMapper::map).orElseThrow();
     }
 
-    public Optional<UserReadDto> read(Long userId) {
-        return userRepository.findById(userId)
-                .map(userReadMapper::mapToDto);
+    protected Optional<User> find(Long guestId) {
+        return userRepository.findById(guestId);
     }
 
-    public Optional<UserUpdateProfileDto> read(Long userId, Class<UserUpdateProfileDto> cls) {
-        return userRepository.findById(userId)
-                .map(userUpdateProfileMapper::mapToDto);
+    protected User get(Long userId) {
+        return find(userId).orElseThrow(() -> {
+            throw new UserNotFoundException("User not found by id:%s".formatted(userId));
+        });
     }
+
+
+    public Optional<UserReadDto> read(Long userId) {
+        return find(userId).map(userReadMapper::mapToDto);
+    }
+
 
     @Override
     public UserSecurityDetailsDto loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -76,7 +90,6 @@ public class UserService implements UserDetailsService {
                 .orElseThrow();
     }
 
-
     public boolean currentUserIdEquals(Long userId) {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
@@ -86,12 +99,76 @@ public class UserService implements UserDetailsService {
                 .orElse(false);
     }
 
-    public boolean existsById(Long id) {
-        return userRepository.existsById(id);
-    }
-
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+
+    // Room
+
+    public boolean userOwnRoom(Long userId, Long roomId) {
+        if (Objects.isNull(userId) || Objects.isNull(roomId)) {
+            return false;
+        }
+        return userRepository.userOwnRoom(userId, roomId);
+    }
+
+    public void userOwnRoomOrThrow(Long userId, Long roomId) throws UserNotOwnRoomException {
+        if (!userOwnRoom(userId, roomId)) {
+            throw new UserNotOwnRoomException();
+        }
+    }
+
+    public boolean userOwnRoom(UserSecurityDetailsDto user, RoomReadDto room) {
+        var userId = Optional.ofNullable(user).map(UserSecurityDetailsDto::getId);
+        if (userId.isEmpty()) {
+            return false;
+        }
+        var ownerId = Optional.ofNullable(room).map(RoomReadDto::getOwner).map(UserReadDto::getId);
+        if (ownerId.isEmpty()) {
+            return false;
+        }
+        return Objects.equals(userId, ownerId);
+    }
+
+    public void userOwnRetroOrRoom(UserSecurityDetailsDto user, RoomReadDto room) throws UserNotOwnRoomException {
+        if (!userOwnRoom(user, room)) {
+            throw new UserNotOwnRoomException();
+        }
+    }
+
+
+    // Retro
+
+    public boolean userOwnRetro(Long userId, Long retroId) {
+        if (Objects.isNull(userId) || Objects.isNull(retroId)) {
+            return false;
+        }
+        return userRepository.userOwnRetro(userId, retroId);
+    }
+
+    public void userOwnRetroOrThrow(Long userId, Long retroId) throws UserNotOwnRetroException {
+        if (!userOwnRetro(userId, retroId)) {
+            throw new UserNotOwnRetroException();
+        }
+    }
+
+    public boolean userOwnRetro(UserSecurityDetailsDto user, RetroReadDto retro) {
+        var userId = Optional.ofNullable(user).map(UserSecurityDetailsDto::getId);
+        if (userId.isEmpty()) {
+            return false;
+        }
+        var ownerId = Optional.ofNullable(retro).map(RetroReadDto::getOwner).map(UserReadDto::getId);
+        if (ownerId.isEmpty()) {
+            return false;
+        }
+        return Objects.equals(userId, ownerId);
+    }
+
+    public void userOwnRetroOrThrow(UserSecurityDetailsDto user, RetroReadDto retro) throws UserNotOwnRetroException {
+        if (!userOwnRetro(user, retro)) {
+            throw new UserNotOwnRetroException();
+        }
     }
 
 }

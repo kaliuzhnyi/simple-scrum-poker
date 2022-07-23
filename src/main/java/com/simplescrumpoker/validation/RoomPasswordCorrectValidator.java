@@ -42,20 +42,8 @@ public class RoomPasswordCorrectValidator implements ConstraintValidator<RoomPas
                     return Optional.empty();
                 })
                 .isPresent();
-
-//        return Optional.ofNullable(id)
-//                .flatMap(roomService::read)
-//                .map(room -> Objects.equals(room.getPassword(), password))
-//                .or(() -> Optional.of(false))
-//                .filter(r -> r)
-//                .or(() -> {
-//                    context.buildConstraintViolationWithTemplate(message)
-//                            .addPropertyNode(fieldNamePassword)
-//                            .addConstraintViolation();
-//                    return Optional.empty();
-//                })
-//                .isPresent();
     }
+
     private Object getFieldValue(Object object, String fieldName) throws Exception {
         Class<?> cls = object.getClass();
         var field = cls.getDeclaredField(fieldName);

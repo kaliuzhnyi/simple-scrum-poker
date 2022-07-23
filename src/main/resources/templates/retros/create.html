@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create retro</title>
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    <!--*/-->
+    <th:block th:replace="~{assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{assets/html/base::header}"></header>
+<main class="container my-5">
+    <div class="row justify-content-around">
+        <div class="col-md-6">
+            <h2 class="mb-4">Create retro</h2>
+            <form name="createRoom" method="post"
+                  th:action="@{/retros/create}"
+                  th:object="${retro}">
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Retro title"
+                           th:field="*{title}"
+                           th:errorclass="is-invalid">
+                    <label for="title">Retro title</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('title')}"
+                         th:errors="*{title}">Title error
+                    </div>
+                </div>
+                <div class="form-floating mb-4">
+                    <textarea class="form-control" id="description" name="description" placeholder="Retro description"
+                              th:field="*{description}"
+                              th:errorclass="is-invalid"></textarea>
+                    <label for="description">Retro description</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('description')}"
+                         th:errors="*{description}">Description error
+                    </div>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Retro password"
+                           th:field="*{password}"
+                           th:errorclass="is-invalid">
+                    <label for="password">Retro password</label>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}">Password error
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-lg mb-4" type="submit">Create a new retro</button>
+            </form>
+            <th:block th:insert="~{/assets/html/alert::form}"></th:block>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{assets/html/base::footer-base}"></footer>
+</body>
+</html>

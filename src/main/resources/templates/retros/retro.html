@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Retro</title>
+    <!--/*-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <!--<link rel="stylesheet" href="/static/css/bootstrap-icons.css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/bootstrap.bundle.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <!--*/-->
+    <th:block th:replace="~{assets/html/base::head}"></th:block>
+</head>
+<body>
+<header th:replace="~{assets/html/base::header}"></header>
+<main class="container my-5">
+    <!--/*@thymesVar id="retro" type="com.simplescrumpoker.dto.retro.RetroReadDto"*/-->
+    <!--/*@thymesVar id="guest" type="com.simplescrumpoker.dto.guest.GuestReadDto"*/-->
+    <!--/*@thymesVar id="isOwner" type="java.lang.Boolean"*/-->
+    <!--/*@thymesVar id="lastRetroMessageType" type="com.simplescrumpoker.model.retro.RetroMessageType"*/-->
+    <div class="row">
+
+        <div class="col">
+
+            <!--/* RETRO TITLE */-->
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-11">
+                    <h2 th:text="${retro.title}">Retro title</h2>
+                </div>
+                <div class="col-1 text-end" th:if="${isOwner}?:false">
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-link link-secondary opacity-50" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" th:href="@{/retros/{retroId}/edit(retroId=${retro.id})}">Edit retro</a></li>
+                            <!--<li><button type="submit" class="dropdown-item" id="commandGuestsRemove">Remove all guests</button></li>-->
+                            <li>
+                                <form th:method="delete" th:action="@{/retros/{retroId}/guests(retroId=${retro.id})}">
+                                    <button class="dropdown-item" type="submit">Block all guests</button>
+                                </form>
+                            </li>
+                            <!--<li><button type="submit" class="dropdown-item" id="commandMessagesRemove">Remove all messages</button></li>-->
+                            <li>
+                                <form th:method="delete" th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}">
+                                    <button class="dropdown-item" type="submit">Remove all messages</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!--/* RETRO DESCRIPTION */-->
+            <div class="row mb-4" th:if="${not #strings.isEmpty(retro.description)}">
+                <p th:text="${retro.description}">Retro description</p>
+            </div>
+
+            <!--/* ACTIONS */-->
+            <!--/*@thymesVar id="retroMessageAction" type="com.simplescrumpoker.dto.retro.message.RetroMessageCreateDto"*/-->
+            <!--/*@thymesVar id="retroMessagesAction" type="java.util.List<com.simplescrumpoker.dto.retro.message.RetroMessageReadDto>"*/-->
+            <div class="row mb-4">
+                <div class="container">
+                    <h5 class="text-secondary text-opacity-75 border-bottom border-2 border-opacity-75 border-secondary mb-3">Actions</h5>
+                </div>
+                <div class="col">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                            th:each="retroMessage : ${retroMessagesAction}">
+                            <span th:text="*{retroMessage.value}"></span>
+                            <form th:if="${isOwner and retro.status != T(com.simplescrumpoker.model.retro.RetroStatus).CLOSE}"
+                                  th:method="delete"
+                                  th:action="@{/retros/{retroId}/messages/{messageId}(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                <button class="btn btn-link text-decoration-none text-secondary fs-8" type="submit">
+                                    <i class="bi bi-x opacity-75"></i>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col" th:if="${isOwner and retro.status != T(com.simplescrumpoker.model.retro.RetroStatus).CLOSE}">
+                    <!--/* ADD */-->
+                    <form name="retro-message" method="post"
+                          th:method="post"
+                          th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}"
+                          th:object="${retroMessageAction}">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control form-shadow-secondary" placeholder="What will you do?" aria-label="What will you do?" aria-describedby="message-action"
+                                   th:field="*{value}"
+                                   th:autofocus="${lastRetroMessageType == T(com.simplescrumpoker.model.retro.RetroMessageType).ACTION}">
+                            <!--/*/
+                            <div class="invalid-tooltip-custom opacity-50"
+                                 th:if="${#fields.hasErrors('value')}"
+                                 th:errors="*{value}">Value error
+                            </div>
+                            /*/-->
+                            <button class="btn btn-outline-input btn-outline-input-secondary" type="submit" id="message-action">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <input th:field="*{type}" hidden>
+                    </form>
+                </div>
+            </div>
+
+            <!--/* BOARD */-->
+            <div class="row">
+
+                <!--/* MESSAGES WELL */-->
+                <!--/*@thymesVar id="retroMessageWell" type="com.simplescrumpoker.dto.retro.message.RetroMessageCreateDto"*/-->
+                <!--/*@thymesVar id="retroMessagesWell" type="java.util.List<com.simplescrumpoker.dto.retro.message.RetroMessageReadDto>"*/-->
+                <div class="col">
+                    <h5 class="text-success text-opacity-75 border-bottom border-2 border-opacity-75 border-success mb-3">Well</h5>
+                    <!--/* ADD */-->
+                    <form name="retro-message" method="post"
+                          th:if="${retro.status == T(com.simplescrumpoker.model.retro.RetroStatus).OPEN}"
+                          th:method="post"
+                          th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}"
+                          th:object="${retroMessageWell}">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control form-shadow-success" placeholder="What went well?" aria-label="What went well?" aria-describedby="message-well"
+                                   th:field="*{value}"
+                                   th:autofocus="${lastRetroMessageType == T(com.simplescrumpoker.model.retro.RetroMessageType).WELL}">
+                            <!--/*/
+                            <div class="invalid-tooltip-custom opacity-50"
+                                 th:if="${#fields.hasErrors('value')}"
+                                 th:errors="*{value}">Value error
+                            </div>
+                            /*/-->
+                            <button class="btn btn-outline-input btn-outline-input-success" type="submit" id="message-well">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <input th:field="*{type}" hidden>
+                    </form>
+                    <!--/* LIST */-->
+                    <div th:if="${not #lists.isEmpty(retroMessagesWell)}">
+                        <div class="alert alert-success py-0" role="alert"
+                             th:each="retroMessage : ${retroMessagesWell}">
+                            <div class="row">
+                                <div class="col d-flex flex-row-reverse align-items-center px-0 pt-1 mb-n3">
+                                    <th:block th:if="*{retroMessage.guest.id == guest.id}">
+                                        <form class="p-0 m-0"
+                                              th:method="delete"
+                                              th:action="@{/retros/{retroId}/messages/{messageId}(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                            <button class="btn btn-link alert-link text-decoration-none p-0 mt-n2 fs-8" type="submit">
+                                                <i class="bi bi-x opacity-75"></i>
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <p class="m-0" th:text="*{retroMessage.value}"></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="row">
+                                <div class="col d-flex flex-row align-items-center">
+                                    <form th:method="post"
+                                          th:action="@{/retros/{retroId}/messages/{messageId}/like(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                        <button class="btn btn-link alert-link text-decoration-none px-1 fs-8" type="submit">
+                                            <i class="bi bi-suit-heart-fill opacity-75"></i>
+                                        </button>
+                                    </form>
+                                    <span class="fw-semibold fs-9"
+                                          th:if="*{retroMessage.likesCount > 0}"
+                                          th:text="*{retroMessage.likesCount}"></span>
+                                </div>
+                                <div class="col d-flex flex-row-reverse align-items-center">
+                                    <span class="fw-bold fs-10" th:text="*{retroMessage.guest.name}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MESSAGES BAD -->
+                <!--/*@thymesVar id="retroMessageBad" type="com.simplescrumpoker.dto.retro.message.RetroMessageCreateDto"*/-->
+                <!--/*@thymesVar id="retroMessagesBad" type="java.util.List<com.simplescrumpoker.dto.retro.message.RetroMessageReadDto>"*/-->
+                <div class="col">
+                    <h5 class="text-danger text-opacity-75 border-bottom border-2 border-opacity-75 border-danger mb-3">Bad</h5>
+                    <!--/* ADD */-->
+                    <form name="retro-message" method="post"
+                          th:if="${retro.status == T(com.simplescrumpoker.model.retro.RetroStatus).OPEN}"
+                          th:method="post"
+                          th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}"
+                          th:object="${retroMessageBad}">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control form-shadow-danger" placeholder="What went bad?" aria-label="What went bad?" aria-describedby="message-bad"
+                                   th:field="*{value}"
+                                   th:autofocus="${lastRetroMessageType == T(com.simplescrumpoker.model.retro.RetroMessageType).BAD}">
+                            <!--/*/
+                            <div class="invalid-tooltip-custom opacity-50"
+                                 th:if="${#fields.hasErrors('value')}"
+                                 th:errors="*{value}">Value error
+                            </div>
+                            /*/-->
+                            <button class="btn btn-outline-input btn-outline-input-danger" type="submit" id="message-bad">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <input th:field="*{type}" hidden>
+                    </form>
+                    <!--/* LIST */-->
+                    <div th:if="${not #lists.isEmpty(retroMessagesBad)}">
+                        <div class="alert alert-danger py-0" role="alert" th:each="retroMessage : ${retroMessagesBad}">
+                            <div class="row">
+                                <div class="col d-flex flex-row-reverse align-items-center px-0 pt-1 mb-n3">
+                                    <th:block th:if="*{retroMessage.guest.id == guest.id}">
+                                        <form class="p-0 m-0"
+                                              th:method="delete"
+                                              th:action="@{/retros/{retroId}/messages/{messageId}(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                            <button class="btn btn-link alert-link text-decoration-none p-0 mt-n2 fs-8" type="submit">
+                                                <i class="bi bi-x opacity-75"></i>
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <p class="m-0" th:text="*{retroMessage.value}"></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="row">
+                                <div class="col d-flex flex-row align-items-center">
+                                    <form th:method="post"
+                                          th:action="@{/retros/{retroId}/messages/{messageId}/like(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                        <button class="btn btn-link alert-link text-decoration-none px-1 fs-8" type="submit">
+                                            <i class="bi bi-suit-heart-fill opacity-75"></i>
+                                        </button>
+                                    </form>
+                                    <span class="fw-semibold fs-9"
+                                          th:if="*{retroMessage.likesCount > 0}"
+                                          th:text="*{retroMessage.likesCount}"></span>
+                                </div>
+                                <div class="col d-flex flex-row-reverse align-items-center">
+                                    <span class="fw-bold fs-10" th:text="*{retroMessage.guest.name}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--/* MESSAGES START */-->
+                <!--/*@thymesVar id="retroMessageStart" type="com.simplescrumpoker.dto.retro.message.RetroMessageCreateDto"*/-->
+                <!--/*@thymesVar id="retroMessagesStart" type="java.util.List<com.simplescrumpoker.dto.retro.message.RetroMessageReadDto>"*/-->
+                <div class="col">
+                    <h5 class="text-primary text-opacity-75 border-bottom border-2 border-opacity-75 border-primary mb-3">Start</h5>
+                    <!--/* ADD */-->
+                    <form name="retro-message" method="post"
+                          th:if="${retro.status == T(com.simplescrumpoker.model.retro.RetroStatus).OPEN}"
+                          th:method="post"
+                          th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}"
+                          th:object="${retroMessageStart}">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control form-shadow-primary" placeholder="What to start doing?" aria-label="What to start doing?" aria-describedby="message-start"
+                                   th:field="*{value}"
+                                   th:autofocus="${lastRetroMessageType == T(com.simplescrumpoker.model.retro.RetroMessageType).START}">
+                            <!--/*/
+                            <div class="invalid-tooltip-custom opacity-50"
+                                 th:if="${#fields.hasErrors('value')}"
+                                 th:errors="*{value}">Value error
+                            </div>
+                            /*/-->
+                            <button class="btn btn-outline-input btn-outline-input-primary" type="submit" id="message-start">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <input th:field="*{type}" hidden>
+                    </form>
+                    <!--/* LIST */-->
+                    <div th:if="${not #lists.isEmpty(retroMessagesStart)}">
+                        <div class="alert alert-primary py-0" role="alert" th:each="retroMessage : ${retroMessagesStart}">
+                            <div class="row">
+                                <div class="col d-flex flex-row-reverse align-items-center px-0 pt-1 mb-n3">
+                                    <th:block th:if="*{retroMessage.guest.id == guest.id}">
+                                        <form class="p-0 m-0"
+                                              th:method="delete"
+                                              th:action="@{/retros/{retroId}/messages/{messageId}(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                            <button class="btn btn-link alert-link text-decoration-none p-0 mt-n2 fs-8" type="submit">
+                                                <i class="bi bi-x opacity-75"></i>
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <p class="m-0" th:text="*{retroMessage.value}"></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="row">
+                                <div class="col d-flex flex-row align-items-center">
+                                    <form th:method="post"
+                                          th:action="@{/retros/{retroId}/messages/{messageId}/like(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                        <button class="btn btn-link alert-link text-decoration-none px-1 fs-8" type="submit">
+                                            <i class="bi bi-suit-heart-fill opacity-75"></i>
+                                        </button>
+                                    </form>
+                                    <span class="fw-semibold fs-9"
+                                          th:if="*{retroMessage.likesCount > 0}"
+                                          th:text="*{retroMessage.likesCount}"></span>
+                                </div>
+                                <div class="col d-flex flex-row-reverse align-items-center">
+                                    <span class="fw-bold fs-10" th:text="*{retroMessage.guest.name}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--/* MESSAGES STOP */-->
+                <!--/*@thymesVar id="retroMessageStop" type="com.simplescrumpoker.dto.retro.message.RetroMessageCreateDto"*/-->
+                <!--/*@thymesVar id="retroMessagesStop" type="java.util.List<com.simplescrumpoker.dto.retro.message.RetroMessageReadDto>"*/-->
+                <div class="col">
+                    <h5 class="text-warning text-opacity-75 border-bottom border-2 border-opacity-75 border-warning mb-3">Stop</h5>
+                    <!--/* ADD */-->
+                    <form name="retro-message" method="post"
+                          th:if="${retro.status == T(com.simplescrumpoker.model.retro.RetroStatus).OPEN}"
+                          th:method="post"
+                          th:action="@{/retros/{retroId}/messages(retroId=${retro.id})}"
+                          th:object="${retroMessageStop}">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control form-shadow-warning" placeholder="What to stop doing?" aria-label="What to stop doing?" aria-describedby="message-stop"
+                                   th:field="*{value}"
+                                   th:autofocus="${lastRetroMessageType == T(com.simplescrumpoker.model.retro.RetroMessageType).STOP}">
+                            <!--/*/
+                            <div class="invalid-tooltip-custom opacity-50"
+                                 th:if="${#fields.hasErrors('value')}"
+                                 th:errors="*{value}">Value error
+                            </div>
+                            /*/-->
+                            <button class="btn btn-outline-input btn-outline-input-warning" type="submit" id="message-stop">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <input th:field="*{type}" hidden>
+                    </form>
+                    <!--/* LIST */-->
+                    <div th:if="${not #lists.isEmpty(retroMessagesStop)}">
+                        <div class="alert alert-warning py-0" role="alert" th:each="retroMessage : ${retroMessagesStop}">
+                            <div class="row">
+                                <div class="col d-flex flex-row-reverse align-items-center px-0 pt-1 mb-n3">
+                                    <th:block th:if="*{retroMessage.guest.id == guest.id}">
+                                        <form class="p-0 m-0"
+                                              th:method="delete"
+                                              th:action="@{/retros/{retroId}/messages/{messageId}(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                            <button class="btn btn-link alert-link text-decoration-none p-0 mt-n2 fs-8" type="submit">
+                                                <i class="bi bi-x opacity-75"></i>
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <p class="m-0" th:text="*{retroMessage.value}"></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="row">
+                                <div class="col d-flex flex-row align-items-center">
+                                    <form th:method="post"
+                                          th:action="@{/retros/{retroId}/messages/{messageId}/like(retroId=${retro.id},messageId=*{retroMessage.id})}">
+                                        <button class="btn btn-link alert-link text-decoration-none px-1 fs-8" type="submit">
+                                            <i class="bi bi-suit-heart-fill opacity-75"></i>
+                                        </button>
+                                    </form>
+                                    <span class="fw-semibold fs-9"
+                                          th:if="*{retroMessage.likesCount > 0}"
+                                          th:text="*{retroMessage.likesCount}"></span>
+                                </div>
+                                <div class="col d-flex flex-row-reverse align-items-center">
+                                    <span class="fw-bold fs-10" th:text="*{retroMessage.guest.name}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<footer th:replace="~{assets/html/base::footer-base}"></footer>
+<script>
+    $(function () {
+
+    });
+</script>
+</body>
+</html>
