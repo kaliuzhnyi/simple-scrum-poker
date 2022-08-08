@@ -7,7 +7,6 @@ import com.simplescrumpoker.dto.retro.RetroReadDto;
 import com.simplescrumpoker.dto.room.RoomReadDto;
 import com.simplescrumpoker.dto.user.UserSecurityDetailsDto;
 import com.simplescrumpoker.exception.GuestNotFoundException;
-import com.simplescrumpoker.exception.GuestNotPresentInRetroException;
 import com.simplescrumpoker.mapper.guest.GuestCreateMapper;
 import com.simplescrumpoker.mapper.guest.GuestReadMapper;
 import com.simplescrumpoker.model.guest.Guest;
